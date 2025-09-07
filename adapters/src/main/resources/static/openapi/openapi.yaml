@@ -1,0 +1,354 @@
+openapi: 3.0.2
+info:
+  title: Stay Fit API
+  contact:
+    email: arnaldotecadm@hotmail.com
+  description: >-
+    API em construção.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1
+
+servers:
+  - url: /api/v1
+
+security:
+  - clientCredentials: [ ]
+  - bearerAuth: [ ]
+
+paths:
+  /exercises:
+    post:
+      tags:
+        - ExerciseSession
+      summary: Under construction
+      operationId: postExerciseSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HealthDataPointDTO"
+      responses:
+        200:
+          description: Get analysis result
+          content:
+            application/json:
+              schema:
+                type: string
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      scheme: bearer
+      type: http
+      bearerFormat: JWT
+    clientCredentials:
+      type: oauth2
+      description: OAuth2 Client credentials
+      flows:
+        clientCredentials:
+          tokenUrl: ""
+          scopes: { }
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+  schemas:
+    ApiError:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+        details:
+          type: string
+        validation:
+          type: string
+
+    HealthDataPointDTO:
+      type: object
+      properties:
+        clientDataId:
+          type: string
+          description: The optional ID supplied by the client app associated with the data.
+        clientVersion:
+          type: integer
+          description: The optional data version supplied by the client app associated with the data.
+        dataSource:
+          $ref: "#/components/schemas/DataSourceDTO"
+          description: The DataSource of the data, including the following information that provided the health data.
+        endTime:
+          type: string
+          format: instant
+          description: The end time of the data insertion, specified as an exclusive Instant, in milliseconds.
+        startTime:
+          type: string
+          format: instant
+          description: The start time of the data insertion, specified as an inclusive Instant, in milliseconds.
+        uid:
+          type: string
+          description: The unique identifier of the data, assigned at the time of insertion.
+        updateTime:
+          type: string
+          format: instant
+          description: The timestamp representing the last update of the data in the Samsung Health app's data store, specified as Instant, in milliseconds. If no data update has occurred, it remains the same as startTime.
+        zoneOffset:
+          type: string
+          format: zone-offset
+          description: The zone offset for the measured startTime and endTime of this data.
+        value:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExerciseSessionDTO"
+      required:
+        - startTime
+        - uid
+        - value
+
+    DataSourceDTO:
+      type: object
+      properties:
+        appId:
+          type: string
+        deviceId:
+          type: string
+      required:
+        - appId
+        - deviceId
+
+    ExerciseSessionDTO:
+      type: object
+      properties:
+        altitudeGain:
+          type: number
+          format: float
+          description: The altitude gain during this exercise session, in meters.
+        altitudeLoss:
+          type: number
+          format: float
+          description: The altitude loss during this exercise session, in meters.
+        calories:
+          type: number
+          format: float
+          description: The calories burned during this exercise session, in kilocalories.
+        comment:
+          type: string
+          description: The comment entered by the user for the exercise session.
+        count:
+          type: integer
+          description: The number of counts for a countable exercise in this exercise session.
+        countType:
+          type: string
+          enum:
+            - UNDEFINED
+            - STRIDE
+            - STROKE
+            - SWING
+            - REPETITION
+          description: The count type for a countable exercise in this exercise session.
+        customTitle:
+          type: string
+          description: The exercise title of this exercise session.
+        declineDistance:
+          type: number
+          format: float
+          description: The distance covered on a declined surface during the exercise session, in meters.
+        distance:
+          type: number
+          format: float
+          description: The distance covered during this exercise session, in meters.
+        duration:
+          type: string
+          format: duration
+          description: The duration of this exercise session, specified as Duration, in milliseconds.
+        endTime:
+          type: string
+          format: instant
+          description: The timestamp representing the end of the measurement in this exercise session, specified as Instant, in milliseconds.
+        exerciseType:
+          type: string
+          description: The exercise type of this exercise session. It indicates the Samsung Health app's predefined exercise type.
+        inclineDistance:
+          type: number
+          format: float
+          description: The distance covered on an inclined surface during the exercise session, in meters.
+        log:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExerciseLogDTO"
+          description: This exercise session's detailed logs such as heart rate or speed. It's a list of ExerciseLog.
+        maxAltitude:
+          type: number
+          format: float
+          description: The highest altitude in this exercise session, in meters.
+        maxCadence:
+          type: number
+          format: float
+          description: The highest value for the cadence in this exercise session, as either cycles per minute or swings per minute.
+        maxCaloriesBurnRate:
+          type: number
+          format: float
+          description: The highest value for the calorie burn rate in this exercise session.
+        maxHeartRate:
+          type: number
+          format: float
+          description: The highest heart rate in this exercise session, in beats per minute.
+        maxPower:
+          type: number
+          format: float
+          description: The highest power in this exercise session, in Watts.
+        maxRpm:
+          type: number
+          format: float
+          description: The highest value for revolutions per minute (RPM) in this exercise session.
+        maxSpeed:
+          type: number
+          format: float
+          description: The highest speed in this exercise session, in meters per second (m/s).
+        meanCadence:
+          type: number
+          format: float
+          description: The average value for the cadence in this exercise session, as either cycles per minute or swings per minute.
+        meanCalorieBurnRate:
+          type: number
+          format: float
+          description: The average calorie burn rate in this exercise session.
+        meanHeartRate:
+          type: number
+          format: float
+          description: The average heart rate in this exercise session, in beats per minute.
+        meanPower:
+          type: number
+          format: float
+          description: The average power in this exercise session, in Watts.
+        meanRpm:
+          type: number
+          format: float
+          description: The average value for revolutions per minute (RPM) in this exercise session.
+        meanSpeed:
+          type: number
+          format: float
+          description: The average speed in this exercise session, in meters per second (m/s).
+        minAltitude:
+          type: number
+          format: float
+          description: The lowest altitude in this exercise session, in meters.
+        minHeartRate:
+          type: number
+          format: float
+          description: The lowest heart rate in this exercise session, in beats per minute.
+        route:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExerciseLocationDTO"
+          description: This exercise session's route. It's a list of ExerciseLocation.
+        startTime:
+          type: string
+          format: instant
+          description: The timestamp representing the start of the measurement in this exercise session, specified as an Instant, in milliseconds.
+        swimmingLog:
+          type: string
+          description: If the exercise session's exercise type is POOL_SWIMMING or OPEN_WATER_SWIMMING, detailed logs with SwimmingLog.
+        vo2Max:
+          type: number
+          format: float
+          description: The VO2 max during this exercise session.
+      required:
+        - startTime
+        - endTime
+        - exerciseType
+        - duration
+        - calories
+
+    ExerciseLogDTO:
+      type: object
+      properties:
+        cadence:
+          type: number
+          format: float
+          description: The cadence of movements per minute, such as steps per minute.
+        count:
+          type: integer
+          description: The number of ExerciseLogs.
+        heartRate:
+          type: number
+          format: float
+          description: The heart rate value, in beats per minute.
+        power:
+          type: number
+          format: float
+          description: The power, in Watts.
+        speed:
+          type: number
+          format: float
+          description: The speed, in meters per second.
+        timestamp:
+          type: string
+          format: instant
+          description: The timestamp representing the time when the exercise log was recorded, specified as Instant, in milliseconds.
+      required:
+        - timestamp
+
+    ExerciseLocationDTO:
+      type: object
+      properties:
+        accuracy:
+          type: number
+          format: float
+          description: The accuracy of the location.
+        altitude:
+          type: number
+          format: float
+          description: The altitude of the location during exercise.
+        latitude:
+          type: number
+          format: float
+          description: The latitude of the location during exercise.
+        longitude:
+          type: number
+          format: float
+          description: The longitude of the location during exercise.
+        timestamp:
+          type: string
+          format: instant
+          description: The timestamp representing the time when the location was recorded during exercise, specified as Instant, in milliseconds.
+      required:
+        - timestamp
+        - longitude
+        - latitude
