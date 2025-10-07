@@ -21,7 +21,7 @@ paths:
   /exercises:
     post:
       tags:
-        - ExerciseSession
+        - Sessions
       summary: Under construction
       operationId: postExerciseSession
       requestBody:
@@ -29,7 +29,35 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/HealthDataPointDTO"
+              $ref: "#/components/schemas/HealthExerciseDataPointDTO"
+      responses:
+        200:
+          description: Get analysis result
+          content:
+            application/json:
+              schema:
+                type: string
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /sleeps:
+    post:
+      tags:
+        - Sessions
+      summary: Under construction
+      operationId: postSleepSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HealthSleepDataPointDTO"
       responses:
         200:
           description: Get analysis result
@@ -101,7 +129,7 @@ components:
         validation:
           type: string
 
-    HealthDataPointDTO:
+    BaseHealthDataPointDTO:
       type: object
       properties:
         clientDataId:
@@ -132,14 +160,35 @@ components:
           type: string
           format: zone-offset
           description: The zone offset for the measured startTime and endTime of this data.
-        value:
-          type: array
-          items:
-            $ref: "#/components/schemas/ExerciseSessionDTO"
       required:
         - startTime
         - uid
-        - value
+
+    HealthExerciseDataPointDTO:
+      allOf:
+        - $ref: "#/components/schemas/BaseHealthDataPointDTO"
+        - type: object
+          properties:
+            sessions:
+              type: array
+              items:
+                $ref: "#/components/schemas/ExerciseSessionDTO"
+      required:
+        - startTime
+        - uid
+
+    HealthSleepDataPointDTO:
+      allOf:
+        - $ref: "#/components/schemas/BaseHealthDataPointDTO"
+        - type: object
+          properties:
+            sessions:
+              type: array
+              items:
+                $ref: "#/components/schemas/SleepSessionDTO"
+      required:
+        - startTime
+        - uid
 
     DataSourceDTO:
       type: object
@@ -296,6 +345,30 @@ components:
         - duration
         - calories
 
+    SleepSessionDTO:
+      type: object
+      properties:
+        startTime:
+          type: string
+          format: instant
+          description: The timestamp representing the start of the measurement in this exercise session, specified as an Instant, in milliseconds.
+        endTime:
+          type: string
+          format: instant
+          description: The timestamp representing the end of the measurement in this exercise session, specified as Instant, in milliseconds.
+        duration:
+          type: string
+          format: duration
+          description: The duration of this exercise session, specified as Duration, in milliseconds.
+        stages:
+          type: array
+          items:
+            $ref: "#/components/schemas/SleepStageDTO"
+      required:
+        - startTime
+        - endTime
+        - duration
+
     ExerciseLogDTO:
       type: object
       properties:
@@ -352,3 +425,27 @@ components:
         - timestamp
         - longitude
         - latitude
+
+    SleepStageDTO:
+      type: object
+      properties:
+        startTime:
+          type: string
+          format: instant
+          description: The time when the sleep stage ended, specified as Instant.
+        endTime:
+          type: string
+          format: instant
+          description: The time when the sleep stage started, specified as Instant.
+        stage:
+          type: string
+          enum:
+            - UNDEFINED
+            - AWAKE
+            - LIGHT
+            - DEEP
+            - REM
+      required:
+        - startTime
+        - endTime
+        - stage

@@ -19,7 +19,6 @@ object ExerciseLogMapper {
         )
     }
 
-
     fun ExerciseLog.toEntity(): ExerciseLogEntity =
         ExerciseLogEntity(
             dataPointUid = this.dataPointUid,

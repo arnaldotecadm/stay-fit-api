@@ -12,8 +12,7 @@ class ExerciseSessionService(
     private val exerciseSessionPersistence: ExerciseSessionPersistencePort,
     private val exerciseLogPersistence: ExerciseLogPersistencePort,
     private val exerciseLocationPersistence: ExerciseLocationPersistencePort
-) :
-    ExerciseSessionServicePort {
+) : ExerciseSessionServicePort {
     override fun persist(exerciseSession: ExerciseSession): ExerciseSession {
         // persist all the logs of the session
         exerciseSession.log?.forEach { exerciseLogPersistence.persist(it) }
