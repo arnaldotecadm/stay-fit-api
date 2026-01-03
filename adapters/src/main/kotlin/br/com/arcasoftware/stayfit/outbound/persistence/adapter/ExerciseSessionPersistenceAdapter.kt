@@ -1,6 +1,7 @@
 package br.com.arcasoftware.stayfit.outbound.persistence.adapter
 
 import br.com.arcasoftware.stayfit.application.port.outbound.persistence.ExerciseSessionPersistencePort
+import br.com.arcasoftware.stayfit.domain.BasicExerciseSession
 import br.com.arcasoftware.stayfit.domain.ExerciseSession
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseSessionMapper.toDomain
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseSessionMapper.toEntity
@@ -15,4 +16,9 @@ class ExerciseSessionPersistenceAdapter(
         this.exerciseSessionRepository
             .save(exerciseSession.toEntity())
             .toDomain()
+
+    override fun getBasicExerciseSessionList(): List<BasicExerciseSession> {
+        return this.exerciseSessionRepository.getBasicExerciseSessionList()
+            .map { it.toDomain() }
+    }
 }

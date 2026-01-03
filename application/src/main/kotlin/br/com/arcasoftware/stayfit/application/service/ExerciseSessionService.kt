@@ -4,6 +4,7 @@ import br.com.arcasoftware.stayfit.application.port.inbound.service.ExerciseSess
 import br.com.arcasoftware.stayfit.application.port.outbound.persistence.ExerciseLocationPersistencePort
 import br.com.arcasoftware.stayfit.application.port.outbound.persistence.ExerciseLogPersistencePort
 import br.com.arcasoftware.stayfit.application.port.outbound.persistence.ExerciseSessionPersistencePort
+import br.com.arcasoftware.stayfit.domain.BasicExerciseSession
 import br.com.arcasoftware.stayfit.domain.ExerciseSession
 import org.springframework.stereotype.Service
 
@@ -21,5 +22,9 @@ class ExerciseSessionService(
         exerciseSession.route?.forEach { exerciseLocationPersistence.persist(it) }
 
         return this.exerciseSessionPersistence.persist(exerciseSession)
+    }
+
+    override fun getBasicExerciseSessionList(): List<BasicExerciseSession> {
+        return this.exerciseSessionPersistence.getBasicExerciseSessionList()
     }
 }
