@@ -6,6 +6,7 @@ import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.BasicEx
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
 interface ExerciseSessionRepository : JpaRepository<ExerciseSessionEntity, Long>{
@@ -30,4 +31,6 @@ interface ExerciseSessionRepository : JpaRepository<ExerciseSessionEntity, Long>
         """
     )
     fun getBasicExerciseSessionList(): List<BasicExerciseSessionProjection>
+
+    fun findByDataPointUid(dataPointUid: UUID): ExerciseSessionEntity?
 }

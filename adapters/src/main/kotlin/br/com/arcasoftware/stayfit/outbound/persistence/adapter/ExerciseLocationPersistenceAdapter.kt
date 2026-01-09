@@ -11,8 +11,12 @@ import org.springframework.stereotype.Service
 class ExerciseLocationPersistenceAdapter(
     private val exerciseLocationRepository: ExerciseLocationRepository
 ) : ExerciseLocationPersistencePort {
-    override fun persist(exerciseLocation: ExerciseLocation): ExerciseLocation =
-        this.exerciseLocationRepository
-            .save(exerciseLocation.toEntity())
-            .toDomain()
+    override fun persist(exerciseLocation: ExerciseLocation): ExerciseLocation {
+        return if (this.exerciseLocationRepository.findByDataPoint(exerciseLocation.dataPointUid) == null)
+            this.exerciseLocationRepository
+                .save(exerciseLocation.toEntity())
+                .toDomain()
+        else
+            exerciseLocation
+    }
 }

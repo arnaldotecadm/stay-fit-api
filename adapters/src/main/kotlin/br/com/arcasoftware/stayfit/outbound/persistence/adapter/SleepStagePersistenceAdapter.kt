@@ -11,8 +11,12 @@ import org.springframework.stereotype.Service
 class SleepStagePersistenceAdapter(
     private val sleepStageRepository: SleepStageRepository
 ) : SleepStagePersistencePort {
-    override fun persist(sleepStage: SleepStage): SleepStage =
-        sleepStageRepository
-            .save(sleepStage.toEntity())
-            .toDomain()
+    override fun persist(sleepStage: SleepStage): SleepStage {
+        return if (sleepStageRepository.findByDataPointUid(sleepStage.dataPointUid) == null)
+            sleepStageRepository
+                .save(sleepStage.toEntity())
+                .toDomain()
+        else
+            sleepStage
+    }
 }

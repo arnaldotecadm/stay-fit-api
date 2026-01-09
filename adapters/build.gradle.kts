@@ -3,6 +3,11 @@ plugins {
     kotlin("plugin.spring") version "1.9.25"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.openapi.generator") version "7.15.0"
+    kotlin("plugin.jpa") version "1.9.25"
+}
+
+noArg {
+    annotation("jakarta.persistence.Entity")
 }
 
 repositories {

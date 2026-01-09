@@ -12,10 +12,15 @@ import org.springframework.stereotype.Service
 class ExerciseSessionPersistenceAdapter(
     private val exerciseSessionRepository: ExerciseSessionRepository
 ) : ExerciseSessionPersistencePort {
-    override fun persist(exerciseSession: ExerciseSession): ExerciseSession =
-        this.exerciseSessionRepository
-            .save(exerciseSession.toEntity())
-            .toDomain()
+    override fun persist(exerciseSession: ExerciseSession): ExerciseSession {
+        return if (this.exerciseSessionRepository.findByDataPointUid(exerciseSession.dataPointUid) == null)
+            this.exerciseSessionRepository
+                .save(exerciseSession.toEntity())
+                .toDomain()
+        else
+            exerciseSession
+
+    }
 
     override fun getBasicExerciseSessionList(): List<BasicExerciseSession> {
         return this.exerciseSessionRepository.getBasicExerciseSessionList()
