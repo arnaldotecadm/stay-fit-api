@@ -13,5 +13,6 @@ data class HealthDataPoint(
     val startTime: Instant,
     val updateTime: Instant?,
     val zoneOffset: ZoneOffset?,
-    val dataPointUid: UUID
+    val dataPointUid: UUID,
+    val sleepScore: Int? = null
 )

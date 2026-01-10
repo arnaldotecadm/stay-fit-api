@@ -19,7 +19,8 @@ object HealthDataPointMapper {
             startTime = this.startTime,
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
-            dataPointUid = UUID.fromString(this.uid)
+            dataPointUid = UUID.fromString(this.uid),
+            sleepScore = this.sleepScore
         )
     }
 
@@ -33,7 +34,8 @@ object HealthDataPointMapper {
             startTime = this.startTime,
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
-            dataPointUid = UUID.fromString(this.uid)
+            dataPointUid = UUID.fromString(this.uid),
+            sleepScore = this.sleepScore
         )
     }
 
@@ -50,7 +52,8 @@ object HealthDataPointMapper {
             startTime = this.startTime,
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
-            dataPointUid = this.dataPointUid
+            dataPointUid = this.dataPointUid,
+            sleepScore = this.sleepScore
         )
 
     fun HealthDataPointEntity.toDomain(): HealthDataPoint =
@@ -63,7 +66,8 @@ object HealthDataPointMapper {
             startTime = this.startTime,
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
-            dataPointUid = this.dataPointUid
+            dataPointUid = this.dataPointUid,
+            sleepScore = this.sleepScore
         )
 
 }

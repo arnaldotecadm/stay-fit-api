@@ -160,6 +160,8 @@ components:
           type: string
           format: zone-offset
           description: The zone offset for the measured startTime and endTime of this data.
+        sleepScore:
+          type: integer
       required:
         - startTime
         - uid

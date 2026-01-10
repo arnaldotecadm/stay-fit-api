@@ -17,5 +17,6 @@ data class HealthDataPointEntity(
     val startTime: Instant,
     val updateTime: Instant?,
     val zoneOffset: ZoneOffset?,
+    val sleepScore: Int?,
     override val dataPointUid: UUID
 ) : BaseEntity(dataPointUid = dataPointUid)
