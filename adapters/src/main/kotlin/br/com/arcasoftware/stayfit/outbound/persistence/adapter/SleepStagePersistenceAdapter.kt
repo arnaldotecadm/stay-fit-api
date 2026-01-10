@@ -12,7 +12,11 @@ class SleepStagePersistenceAdapter(
     private val sleepStageRepository: SleepStageRepository
 ) : SleepStagePersistencePort {
     override fun persist(sleepStage: SleepStage): SleepStage {
-        return if (sleepStageRepository.findByDataPointUid(sleepStage.dataPointUid) == null)
+        return if (sleepStageRepository.findByDataPointUidAndStartTime(
+                dataPointUid = sleepStage.dataPointUid,
+                startTime = sleepStage.startTime
+            ) == null
+        )
             sleepStageRepository
                 .save(sleepStage.toEntity())
                 .toDomain()

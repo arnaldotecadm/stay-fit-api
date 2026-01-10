@@ -12,7 +12,7 @@ class ExerciseLocationPersistenceAdapter(
     private val exerciseLocationRepository: ExerciseLocationRepository
 ) : ExerciseLocationPersistencePort {
     override fun persist(exerciseLocation: ExerciseLocation): ExerciseLocation {
-        return if (this.exerciseLocationRepository.findByDataPoint(exerciseLocation.dataPointUid) == null)
+        return if (this.exerciseLocationRepository.findByDataPointUid(exerciseLocation.dataPointUid) == null)
             this.exerciseLocationRepository
                 .save(exerciseLocation.toEntity())
                 .toDomain()
