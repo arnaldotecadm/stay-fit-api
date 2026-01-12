@@ -74,6 +74,34 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /daily-summary:
+    post:
+      tags:
+        - DailySummary
+      summary: Under construction
+      operationId: postDailySummary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DailySummaryDTO"
+      responses:
+        200:
+          description: Post Daily Summary
+          content:
+            application/json:
+              schema:
+                type: string
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -451,3 +479,57 @@ components:
         - startTime
         - endTime
         - stage
+
+    DailySummaryDTO:
+      type: object
+      properties:
+        totalSteps:
+          type: long
+        activeTimeInMinutes:
+          type: long
+        exerciseCalories:
+          type: long
+        totalBurnedCalories:
+          type: long
+        distanceWhileActive:
+          type: long
+        date:
+          type: string
+          format: date
+        exerciseList:
+          $ref: "#/components/schemas/DailySummaryActivityListDTO"
+      required:
+        - totalSteps
+        - activeTimeInMinutes
+        - exerciseCalories
+        - totalBurnedCalories
+        - distanceWhileActive
+        - date
+        - exerciseList
+
+    DailySummaryActivityListDTO:
+      type: array
+      items:
+        $ref: "#/components/schemas/DailySummaryActivityDTO"
+
+    DailySummaryActivityDTO:
+      type: object
+      properties:
+        calories:
+          type: number
+          format: float
+          description: The calories burned during this exercise session, in kilocalories.
+        dataSource:
+          type: string
+        duration:
+          type: string
+          format: duration
+          description: The duration of this exercise session, specified as Duration, in milliseconds.
+        exerciseType:
+          type: string
+          description: The exercise type of this exercise session. It indicates the Samsung Health app's predefined exercise type.
+      required:
+        - calories
+        - dataSource
+        - duration
+        - exerciseType

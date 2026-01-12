@@ -18,7 +18,6 @@ object ExerciseLocationMapper {
         )
     }
 
-
     fun ExerciseLocation.toEntity(): ExerciseLocationEntity =
         ExerciseLocationEntity(
             dataPointUid = this.dataPointUid,
