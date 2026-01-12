@@ -16,15 +16,15 @@ class HeartRateSeriesController(
     private val heartRateSeriesServicePort: HeartRateSeriesServicePort
 ) : HeartRateApi {
     override fun postHearRateSeries(healthHeartRateSeriesDataPointDTO: List<HealthHeartRateSeriesDataPointDTO>): ResponseEntity<String> {
-        healthHeartRateSeriesDataPointDTO.forEach {
-            println(it.toDomain())
-            this.dataPointService.persist(it.toDomain())
+        healthHeartRateSeriesDataPointDTO.forEach { item ->
+            println(item.toDomain())
+            this.dataPointService.persistHeartRate(item.toDomain())
 
             // persist the exercise sessions related to the activity
-            it.sessions?.map { dataPoint ->
+            item.sessions?.map { dataPoint ->
                 dataPoint.toDomain(
                     UUID.fromString(
-                        it.uid
+                        item.uid
                     )
                 )
             }

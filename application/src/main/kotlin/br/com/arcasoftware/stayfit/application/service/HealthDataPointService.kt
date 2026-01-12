@@ -11,4 +11,8 @@ class HealthDataPointService(private val healthDataPointPersistence: HealthDataP
     override fun persist(healthDataPoint: HealthDataPoint): HealthDataPoint {
         return this.healthDataPointPersistence.persist(healthDataPoint)
     }
+
+    override fun persistHeartRate(healthDataPoint: HealthDataPoint): HealthDataPoint {
+        return this.healthDataPointPersistence.persistHeartRate(healthDataPoint)
+    }
 }

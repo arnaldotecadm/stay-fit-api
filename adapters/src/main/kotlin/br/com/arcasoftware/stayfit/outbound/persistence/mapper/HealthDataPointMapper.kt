@@ -7,6 +7,7 @@ import br.com.arcasoftware.stayfit.model.HealthExerciseDataPointDTO
 import br.com.arcasoftware.stayfit.model.HealthHeartRateSeriesDataPointDTO
 import br.com.arcasoftware.stayfit.model.HealthSleepDataPointDTO
 import br.com.arcasoftware.stayfit.outbound.persistence.model.HealthDataPointEntity
+import br.com.arcasoftware.stayfit.outbound.persistence.model.HearRateSeriesHealthDataPointEntity
 import java.util.*
 
 object HealthDataPointMapper {
@@ -73,7 +74,34 @@ object HealthDataPointMapper {
             dataPointUid = this.dataPointUid
         )
 
+    fun HealthDataPoint.toEntityHeartRate(): HearRateSeriesHealthDataPointEntity =
+        HearRateSeriesHealthDataPointEntity(
+            clientDataId = this.clientDataId,
+            healthDataType = this.healthDataType,
+            clientVersion = this.clientVersion,
+            dataSourceEntity = this.dataSourceEntity,
+            endTime = this.endTime,
+            startTime = this.startTime,
+            updateTime = this.updateTime,
+            zoneOffset = this.zoneOffset,
+            dataPointUid = this.dataPointUid
+        )
+
     fun HealthDataPointEntity.toDomain(): HealthDataPoint =
+        HealthDataPoint(
+            id = this.id!!,
+            healthDataType = this.healthDataType,
+            clientDataId = this.clientDataId,
+            clientVersion = this.clientVersion,
+            dataSourceEntity = this.dataSourceEntity,
+            endTime = this.endTime,
+            startTime = this.startTime,
+            updateTime = this.updateTime,
+            zoneOffset = this.zoneOffset,
+            dataPointUid = this.dataPointUid
+        )
+
+    fun HearRateSeriesHealthDataPointEntity.toDomain(): HealthDataPoint =
         HealthDataPoint(
             id = this.id!!,
             healthDataType = this.healthDataType,
