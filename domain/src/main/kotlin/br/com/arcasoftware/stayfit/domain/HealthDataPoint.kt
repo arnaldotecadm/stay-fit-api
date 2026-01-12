@@ -6,6 +6,7 @@ import java.util.*
 
 data class HealthDataPoint(
     val id: Long?,
+    val healthDataType: HealthDataPointType,
     val clientDataId: String?,
     val clientVersion: Int?,
     val dataSourceEntity: String?,
@@ -13,6 +14,5 @@ data class HealthDataPoint(
     val startTime: Instant,
     val updateTime: Instant?,
     val zoneOffset: ZoneOffset?,
-    val dataPointUid: UUID,
-    val sleepScore: Int? = null
+    val dataPointUid: UUID
 )

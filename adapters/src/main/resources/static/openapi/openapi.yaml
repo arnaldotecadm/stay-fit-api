@@ -102,6 +102,34 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /heart-rate:
+    post:
+      tags:
+        - Sessions
+      summary: Under construction
+      operationId: postHearRateSeries
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HealthHeartRateSeriesDataPointListDTO"
+      responses:
+        200:
+          description: Post Daily Summary
+          content:
+            application/json:
+              schema:
+                type: string
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -219,6 +247,21 @@ components:
       required:
         - startTime
         - uid
+
+    HealthHeartRateSeriesDataPointListDTO:
+      type: array
+      items:
+        $ref: "#/components/schemas/HealthHeartRateSeriesDataPointDTO"
+
+    HealthHeartRateSeriesDataPointDTO:
+      allOf:
+        - $ref: "#/components/schemas/BaseHealthDataPointDTO"
+        - type: object
+          properties:
+            sessions:
+              type: array
+              items:
+                $ref: "#/components/schemas/HeartRateSeriesDTO"
 
     DataSourceDTO:
       type: object
@@ -533,3 +576,36 @@ components:
         - dataSource
         - duration
         - exerciseType
+
+    HeartRateSeriesDTO:
+      type: object
+      properties:
+        startTime:
+          type: string
+          format: instant
+          description: The start time of the data insertion, specified as an inclusive Instant, in milliseconds.
+        endTime:
+          type: string
+          format: instant
+          description: The timestamp representing the end of the measurement in this exercise session, specified as Instant, in milliseconds.
+        duration:
+          type: string
+          format: duration
+          description: The duration of this exercise session, specified as Duration, in milliseconds.
+        heartRate:
+          type: number
+          format: float
+          description: The heart rate value in beats per minute.
+        max:
+          type: number
+          format: float
+          description: The highest heart rate value in this session, in beats per minute.
+        min:
+          type: number
+          format: float
+          description: The lowest heart rate value in this session, in beats per minute.
+      required:
+        - startTime
+        - endTime
+        - duration
+        - heartRate
