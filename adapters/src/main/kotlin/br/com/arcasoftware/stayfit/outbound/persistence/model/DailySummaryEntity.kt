@@ -16,5 +16,6 @@ data class DailySummaryEntity(
     val exerciseCalories: Long,
     val totalBurnedCalories: Long,
     val distanceWhileActive: Long,
+    val sleepScore: Long,
     @OneToMany(cascade = [CascadeType.ALL]) val exerciseList: List<DailySummaryActivityEntity>
 ) : BaseEntity()

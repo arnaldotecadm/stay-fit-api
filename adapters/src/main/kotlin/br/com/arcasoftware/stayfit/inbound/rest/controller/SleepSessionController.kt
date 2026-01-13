@@ -1,18 +1,14 @@
 package br.com.arcasoftware.stayfit.inbound.rest.controller
 
-import br.com.arcasoftware.stayfit.application.port.inbound.service.ExerciseSessionServicePort
 import br.com.arcasoftware.stayfit.application.port.inbound.service.HealthDataPointServicePort
 import br.com.arcasoftware.stayfit.application.port.inbound.service.SleepSessionServicePort
-import br.com.arcasoftware.stayfit.controller.ExercisesApi
 import br.com.arcasoftware.stayfit.controller.SleepsApi
-import br.com.arcasoftware.stayfit.model.HealthExerciseDataPointDTO
 import br.com.arcasoftware.stayfit.model.HealthSleepDataPointDTO
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.HealthDataPointMapper.toDomain
+import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepSessionMapper.toDomain
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
-import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseSessionMapper.toDomain
-import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepSessionMapper.toDomain
-import java.util.*
+import java.util.UUID
 
 @RestController
 class SleepSessionController(
@@ -20,7 +16,7 @@ class SleepSessionController(
     private val sleepSessionServicePort: SleepSessionServicePort
 ) : SleepsApi {
     override fun postSleepSession(healthSleepDataPointDTO: HealthSleepDataPointDTO): ResponseEntity<String> {
-        println(healthSleepDataPointDTO.toDomain())
+        println("Posting sleep session")
         this.dataPointService.persist(healthSleepDataPointDTO.toDomain())
 
         // persist the exercise sessions related to the activity

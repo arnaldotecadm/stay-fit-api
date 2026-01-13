@@ -16,9 +16,11 @@ class ExerciseSessionService(
 ) : ExerciseSessionServicePort {
     override fun persist(exerciseSession: ExerciseSession): ExerciseSession {
         // persist all the logs of the session
+        exerciseLogPersistence.deleteByDataPointUid(exerciseSession.dataPointUid)
         exerciseSession.log?.forEach { exerciseLogPersistence.persist(it) }
 
         // persist all the locations of the session
+        exerciseLocationPersistence.deleteByDataPointUid(exerciseSession.dataPointUid)
         exerciseSession.route?.forEach { exerciseLocationPersistence.persist(it) }
 
         return this.exerciseSessionPersistence.persist(exerciseSession)

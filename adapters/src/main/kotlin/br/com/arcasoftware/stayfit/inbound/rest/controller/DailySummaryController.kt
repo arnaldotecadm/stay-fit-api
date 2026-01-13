@@ -12,7 +12,7 @@ class DailySummaryController(
     private val dailySummaryService: DailySummaryServicePort
 ) : DailySummaryApi {
     override fun postDailySummary(dailySummaryDTO: DailySummaryDTO): ResponseEntity<String> {
-        println(dailySummaryDTO.toDomain())
+        println("Posting daily summary")
         this.dailySummaryService.persist(dailySummaryDTO.toDomain())
         return ResponseEntity.ok().build()
     }

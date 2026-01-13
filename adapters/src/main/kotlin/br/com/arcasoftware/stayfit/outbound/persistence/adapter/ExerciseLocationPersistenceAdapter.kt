@@ -6,17 +6,19 @@ import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseLocationM
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseLocationMapper.toEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.repository.ExerciseLocationRepository
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class ExerciseLocationPersistenceAdapter(
     private val exerciseLocationRepository: ExerciseLocationRepository
 ) : ExerciseLocationPersistencePort {
     override fun persist(exerciseLocation: ExerciseLocation): ExerciseLocation {
-        return if (this.exerciseLocationRepository.findByDataPointUid(exerciseLocation.dataPointUid) == null)
-            this.exerciseLocationRepository
-                .save(exerciseLocation.toEntity())
-                .toDomain()
-        else
-            exerciseLocation
+        return this.exerciseLocationRepository
+            .save(exerciseLocation.toEntity())
+            .toDomain()
+    }
+
+    override fun deleteByDataPointUid(dataPointUid: UUID) {
+        this.exerciseLocationRepository.deleteByDataPointUid(dataPointUid)
     }
 }

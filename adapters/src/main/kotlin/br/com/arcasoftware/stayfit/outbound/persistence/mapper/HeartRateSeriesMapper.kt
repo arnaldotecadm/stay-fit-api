@@ -1,14 +1,9 @@
 package br.com.arcasoftware.stayfit.outbound.persistence.mapper
 
 import br.com.arcasoftware.stayfit.domain.HeartRateSeries
-import br.com.arcasoftware.stayfit.domain.SleepSession
 import br.com.arcasoftware.stayfit.model.HeartRateSeriesDTO
-import br.com.arcasoftware.stayfit.model.SleepSessionDTO
-import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepStageMapper.toDomain
-import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepStageMapper.toEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.model.HeartRateSeriesEntity
-import br.com.arcasoftware.stayfit.outbound.persistence.model.SleepSessionEntity
-import java.util.*
+import java.util.UUID
 
 object HeartRateSeriesMapper {
 

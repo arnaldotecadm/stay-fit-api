@@ -17,6 +17,7 @@ object DailySummaryMapper {
             exerciseCalories = this.exerciseCalories,
             totalBurnedCalories = this.totalBurnedCalories,
             distanceWhileActive = this.distanceWhileActive,
+            sleepScore = this.sleepScore,
             exerciseList = this.exerciseList.map { it.toDomain() }
         )
     }
@@ -29,6 +30,7 @@ object DailySummaryMapper {
             exerciseCalories = this.exerciseCalories,
             totalBurnedCalories = this.totalBurnedCalories,
             distanceWhileActive = this.distanceWhileActive,
+            sleepScore = this.sleepScore,
             exerciseList = this.exerciseList.map { it.toEntity() }
         )
 
@@ -40,6 +42,7 @@ object DailySummaryMapper {
             exerciseCalories = this.exerciseCalories,
             totalBurnedCalories = this.totalBurnedCalories,
             distanceWhileActive = this.distanceWhileActive,
+            sleepScore = this.sleepScore,
             exerciseList = this.exerciseList.map { it.toDomain() }
         )
 
