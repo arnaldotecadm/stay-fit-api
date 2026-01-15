@@ -5,10 +5,8 @@ import br.com.arcasoftware.stayfit.application.port.inbound.service.HeartRateSer
 import br.com.arcasoftware.stayfit.controller.HeartRateApi
 import br.com.arcasoftware.stayfit.model.HealthHeartRateSeriesDataPointDTO
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.HealthDataPointMapper.toDomain
-import br.com.arcasoftware.stayfit.outbound.persistence.mapper.HeartRateSeriesMapper.toDomain
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 @RestController
 class HeartRateSeriesController(
@@ -17,21 +15,8 @@ class HeartRateSeriesController(
 ) : HeartRateApi {
     override fun postHearRateSeries(healthHeartRateSeriesDataPointDTO: List<HealthHeartRateSeriesDataPointDTO>): ResponseEntity<String> {
         println("Posting hear rate series: ${healthHeartRateSeriesDataPointDTO.size}")
-        healthHeartRateSeriesDataPointDTO
-            .parallelStream()
-            .forEach { item ->
-                this.dataPointService.persistHeartRate(item.toDomain())
-
-                // persist the exercise sessions related to the activity
-                item.sessions?.map { dataPoint ->
-                    dataPoint.toDomain(
-                        UUID.fromString(
-                            item.uid
-                        )
-                    )
-                }
-                    ?.forEach { heartRateSeriesServicePort.persist(it) }
-            }
+        val healthDataPoints = healthHeartRateSeriesDataPointDTO.map { dataPoint -> dataPoint.toDomain() }
+        heartRateSeriesServicePort.enqueue(healthDataPoints)
         return ResponseEntity.ok().build()
     }
 

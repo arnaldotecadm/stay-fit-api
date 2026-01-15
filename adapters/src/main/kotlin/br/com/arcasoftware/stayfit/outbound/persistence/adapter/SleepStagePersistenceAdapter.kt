@@ -6,21 +6,19 @@ import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepStageMapper.
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepStageMapper.toEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.repository.SleepStageRepository
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class SleepStagePersistenceAdapter(
     private val sleepStageRepository: SleepStageRepository
 ) : SleepStagePersistencePort {
     override fun persist(sleepStage: SleepStage): SleepStage {
-        return if (sleepStageRepository.findByDataPointUidAndStartTime(
-                dataPointUid = sleepStage.dataPointUid,
-                startTime = sleepStage.startTime
-            ) == null
-        )
-            sleepStageRepository
-                .save(sleepStage.toEntity())
-                .toDomain()
-        else
-            sleepStage
+        return sleepStageRepository
+            .save(sleepStage.toEntity())
+            .toDomain()
+    }
+
+    override fun deleteByDataPointUid(dataPointUid: UUID) {
+        this.sleepStageRepository.deleteByDataPointUid(dataPointUid)
     }
 }

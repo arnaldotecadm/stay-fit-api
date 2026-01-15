@@ -8,8 +8,5 @@ import java.util.*
 
 @Repository
 interface SleepStageRepository : JpaRepository<SleepStageEntity, Long> {
-    fun findByDataPointUidAndStartTime(
-        dataPointUid: UUID,
-        startTime: Instant
-    ): SleepStageEntity?
+    fun deleteByDataPointUid(dataPointUid: UUID)
 }

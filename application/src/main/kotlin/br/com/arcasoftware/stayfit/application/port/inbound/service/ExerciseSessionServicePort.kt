@@ -1,9 +1,9 @@
 package br.com.arcasoftware.stayfit.application.port.inbound.service
 
 import br.com.arcasoftware.stayfit.domain.BasicExerciseSession
-import br.com.arcasoftware.stayfit.domain.ExerciseSession
+import br.com.arcasoftware.stayfit.domain.HealthDataPoint
 
 interface ExerciseSessionServicePort {
-    fun persist(exerciseSession: ExerciseSession): ExerciseSession
+    fun enqueue(healthDataPoint: HealthDataPoint)
     fun getBasicExerciseSessionList(): List<BasicExerciseSession>
 }

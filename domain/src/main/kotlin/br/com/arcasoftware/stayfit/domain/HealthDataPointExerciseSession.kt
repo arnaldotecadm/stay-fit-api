@@ -4,7 +4,7 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.util.*
 
-data class HealthDataPoint(
+data class HealthDataPointExerciseSession(
     val id: Long?,
     val healthDataType: HealthDataPointType,
     val clientDataId: String?,
@@ -14,6 +14,5 @@ data class HealthDataPoint(
     val startTime: Instant,
     val updateTime: Instant?,
     val zoneOffset: ZoneOffset?,
-    val dataPointUid: UUID,
-    val sessions: List<Session>?
+    val dataPointUid: UUID
 )

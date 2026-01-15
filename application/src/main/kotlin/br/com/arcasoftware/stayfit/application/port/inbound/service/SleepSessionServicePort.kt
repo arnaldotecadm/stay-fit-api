@@ -1,7 +1,7 @@
 package br.com.arcasoftware.stayfit.application.port.inbound.service
 
-import br.com.arcasoftware.stayfit.domain.SleepSession
+import br.com.arcasoftware.stayfit.domain.HealthDataPoint
 
 interface SleepSessionServicePort {
-    fun persist(sleepSession: SleepSession): SleepSession
+    fun enqueue(healthDataPoint: HealthDataPoint)
 }

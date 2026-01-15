@@ -5,9 +5,9 @@ import java.time.Instant
 import java.util.*
 
 data class SleepSession(
-    val dataPointUid: UUID,
-    val startTime: Instant,
-    val endTime: Instant,
+    override val dataPointUid: UUID,
+    override val startTime: Instant,
+    override val endTime: Instant,
     val duration: Duration,
     val stages: List<SleepStage>?
-)
+) : Session

@@ -13,7 +13,7 @@ class DailySummaryController(
 ) : DailySummaryApi {
     override fun postDailySummary(dailySummaryDTO: DailySummaryDTO): ResponseEntity<String> {
         println("Posting daily summary")
-        this.dailySummaryService.persist(dailySummaryDTO.toDomain())
+        this.dailySummaryService.enqueue(dailySummaryDTO.toDomain())
         return ResponseEntity.ok().build()
     }
 

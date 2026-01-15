@@ -6,6 +6,9 @@ import br.com.arcasoftware.stayfit.model.DataSourceDTO
 import br.com.arcasoftware.stayfit.model.HealthExerciseDataPointDTO
 import br.com.arcasoftware.stayfit.model.HealthHeartRateSeriesDataPointDTO
 import br.com.arcasoftware.stayfit.model.HealthSleepDataPointDTO
+import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseSessionMapper.toDomain
+import br.com.arcasoftware.stayfit.outbound.persistence.mapper.HeartRateSeriesMapper.toDomain
+import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepSessionMapper.toDomain
 import br.com.arcasoftware.stayfit.outbound.persistence.model.HealthDataPointEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.model.HearRateSeriesHealthDataPointEntity
 import java.util.*
@@ -23,7 +26,8 @@ object HealthDataPointMapper {
             startTime = this.startTime,
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
-            dataPointUid = UUID.fromString(this.uid)
+            dataPointUid = UUID.fromString(this.uid),
+            sessions = this.sessions?.map { it.toDomain(UUID.fromString(this.uid)) }
         )
     }
 
@@ -38,7 +42,8 @@ object HealthDataPointMapper {
             startTime = this.startTime,
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
-            dataPointUid = UUID.fromString(this.uid)
+            dataPointUid = UUID.fromString(this.uid),
+            sessions = this.sessions?.map { it.toDomain(UUID.fromString(this.uid)) }
         )
     }
 
@@ -53,7 +58,8 @@ object HealthDataPointMapper {
             startTime = this.startTime,
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
-            dataPointUid = UUID.fromString(this.uid)
+            dataPointUid = UUID.fromString(this.uid),
+            sessions = this.sessions?.map { it.toDomain(UUID.fromString(this.uid)) }
         )
     }
 
@@ -98,7 +104,8 @@ object HealthDataPointMapper {
             startTime = this.startTime,
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
-            dataPointUid = this.dataPointUid
+            dataPointUid = this.dataPointUid,
+            sessions = emptyList()
         )
 
     fun HearRateSeriesHealthDataPointEntity.toDomain(): HealthDataPoint =
@@ -112,7 +119,8 @@ object HealthDataPointMapper {
             startTime = this.startTime,
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
-            dataPointUid = this.dataPointUid
+            dataPointUid = this.dataPointUid,
+            sessions = emptyList()
         )
 
 }

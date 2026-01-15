@@ -3,6 +3,7 @@ package br.com.arcasoftware.stayfit.outbound.persistence.mapper
 import br.com.arcasoftware.stayfit.domain.BasicExerciseSession
 import br.com.arcasoftware.stayfit.domain.CountType
 import br.com.arcasoftware.stayfit.domain.ExerciseSession
+import br.com.arcasoftware.stayfit.domain.Session
 import br.com.arcasoftware.stayfit.model.ExerciseSessionDTO
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseLocationMapper.toDomain
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseLocationMapper.toEntity
@@ -14,7 +15,7 @@ import java.util.*
 
 object ExerciseSessionMapper {
 
-    fun ExerciseSessionDTO.toDomain(dataPointUID: UUID): ExerciseSession {
+    fun ExerciseSessionDTO.toDomain(dataPointUID: UUID): Session {
         return ExerciseSession(
             dataPointUid = dataPointUID,
             altitudeGain = this.altitudeGain,

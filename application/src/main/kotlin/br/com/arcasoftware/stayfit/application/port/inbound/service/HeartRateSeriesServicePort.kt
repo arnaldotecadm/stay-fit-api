@@ -1,7 +1,7 @@
 package br.com.arcasoftware.stayfit.application.port.inbound.service
 
-import br.com.arcasoftware.stayfit.domain.HeartRateSeries
+import br.com.arcasoftware.stayfit.domain.HealthDataPoint
 
 interface HeartRateSeriesServicePort {
-    fun persist(heartRateSeries: HeartRateSeries): HeartRateSeries
+    fun enqueue(batch: List<HealthDataPoint>)
 }
