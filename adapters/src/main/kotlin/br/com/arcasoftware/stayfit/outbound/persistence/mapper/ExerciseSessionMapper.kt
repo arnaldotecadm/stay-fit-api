@@ -3,14 +3,18 @@ package br.com.arcasoftware.stayfit.outbound.persistence.mapper
 import br.com.arcasoftware.stayfit.domain.BasicExerciseSession
 import br.com.arcasoftware.stayfit.domain.CountType
 import br.com.arcasoftware.stayfit.domain.ExerciseSession
+import br.com.arcasoftware.stayfit.domain.ExerciseSummary
 import br.com.arcasoftware.stayfit.domain.Session
 import br.com.arcasoftware.stayfit.model.ExerciseSessionDTO
+import br.com.arcasoftware.stayfit.model.ExerciseSummaryDTO
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseLocationMapper.toDomain
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseLocationMapper.toEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseLogMapper.toDomain
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseLogMapper.toEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.model.ExerciseSessionEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.BasicExerciseSessionProjection
+import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.ExerciseSummaryProjection
+import java.time.Duration
 import java.util.*
 
 object ExerciseSessionMapper {
@@ -145,6 +149,36 @@ object ExerciseSessionMapper {
             meanCadence = this.meanCadence,
             meanSpeed = this.meanSpeed,
             maxSpeed = this.maxSpeed
+        )
+    }
+
+    fun ExerciseSummaryProjection.toDomain(): ExerciseSummary {
+        return ExerciseSummary(
+            dataPointUid = this.dataPointUid,
+            healthDataType = this.healthDataType,
+            exerciseType = this.exerciseType,
+            date = this.date,
+            startTime = this.startTime,
+            endTime = this.endTime,
+            distance = this.distance,
+            count = this.count,
+            duration = this.duration,
+            calories = this.calories,
+        )
+    }
+
+    fun ExerciseSummary.toDto(): ExerciseSummaryDTO{
+        return ExerciseSummaryDTO(
+            dataPointUid = this.dataPointUid.toString(),
+            healthDataType = this.healthDataType,
+            exerciseType = this.exerciseType,
+            date = this.date,
+            startTime = this.startTime,
+            endTime = this.endTime,
+            distance = this.distance,
+            count = this.count,
+            duration = this.duration,
+            calories = this.calories,
         )
     }
 }

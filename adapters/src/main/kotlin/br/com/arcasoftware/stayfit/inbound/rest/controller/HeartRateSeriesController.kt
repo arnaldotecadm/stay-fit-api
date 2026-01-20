@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class HeartRateSeriesController(
-    private val dataPointService: HealthDataPointServicePort,
     private val heartRateSeriesServicePort: HeartRateSeriesServicePort
 ) : HeartRateApi {
     override fun postHearRateSeries(healthHeartRateSeriesDataPointDTO: List<HealthHeartRateSeriesDataPointDTO>): ResponseEntity<String> {

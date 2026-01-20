@@ -46,6 +46,28 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /exercises/summary:
+    get:
+      tags:
+        - Sessions
+      summary: Under Construction
+      operationId: getExerciseSummary
+      responses:
+        200:
+          description: Get summary of the last exercises
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExerciseSummaryListDTO"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /sleeps:
     post:
       tags:
@@ -610,3 +632,33 @@ components:
         - endTime
         - duration
         - heartRate
+
+    ExerciseSummaryListDTO:
+      type: array
+      items:
+        $ref: "#/components/schemas/ExerciseSummaryDTO"
+
+    ExerciseSummaryDTO:
+      type: object
+      properties:
+        dataPointUid:
+          type: string
+        healthDataType:
+          type: string
+        exerciseType:
+          type: string
+        date:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        distance:
+          type: string
+        count:
+          type: integer
+        duration:
+          type: string
+        calories:
+          type: number
+          format: float

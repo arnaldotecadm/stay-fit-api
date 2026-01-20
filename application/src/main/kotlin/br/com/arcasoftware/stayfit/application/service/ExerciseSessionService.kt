@@ -7,6 +7,7 @@ import br.com.arcasoftware.stayfit.application.port.outbound.persistence.Exercis
 import br.com.arcasoftware.stayfit.application.port.outbound.persistence.ExerciseSessionPersistencePort
 import br.com.arcasoftware.stayfit.domain.BasicExerciseSession
 import br.com.arcasoftware.stayfit.domain.ExerciseSession
+import br.com.arcasoftware.stayfit.domain.ExerciseSummary
 import br.com.arcasoftware.stayfit.domain.HealthDataPoint
 import br.com.arcasoftware.stayfit.domain.Session
 import org.springframework.scheduling.annotation.Scheduled
@@ -38,7 +39,7 @@ class ExerciseSessionService(
     }
 
     @Scheduled(timeUnit = TimeUnit.SECONDS, fixedDelay = 10)
-    fun printCount(){
+    fun printCount() {
         if (this.queue.isNotEmpty()) {
             println("Exercise Queue Size : ${queue.size}")
         }
@@ -59,5 +60,9 @@ class ExerciseSessionService(
 
     override fun getBasicExerciseSessionList(): List<BasicExerciseSession> {
         return this.exerciseSessionPersistence.getBasicExerciseSessionList()
+    }
+
+    override fun getExerciseSessionSummary(): List<ExerciseSummary> {
+        return this.exerciseSessionPersistence.getExerciseSessionSummary()
     }
 }

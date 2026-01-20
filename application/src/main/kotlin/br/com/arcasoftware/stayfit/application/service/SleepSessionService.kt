@@ -35,7 +35,7 @@ class SleepSessionService(
     }
 
     @Scheduled(timeUnit = TimeUnit.SECONDS, fixedDelay = 10)
-    fun printCount(){
+    fun printCount() {
         if (this.queue.isNotEmpty()) {
             println("Sleep Session Queue Size : ${queue.size}")
         }

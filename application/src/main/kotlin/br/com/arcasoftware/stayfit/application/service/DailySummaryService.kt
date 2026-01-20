@@ -26,7 +26,7 @@ class DailySummaryService(private val dailySummaryPersistence: DailySummaryPersi
     }
 
     @Scheduled(timeUnit = TimeUnit.SECONDS, fixedDelay = 10)
-    fun printCount(){
+    fun printCount() {
         if (this.queue.isNotEmpty()) {
             println("Daily Summary Queue Size : ${queue.size}")
         }

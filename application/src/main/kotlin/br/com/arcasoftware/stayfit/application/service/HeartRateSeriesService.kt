@@ -31,14 +31,14 @@ class HeartRateSeriesService(
         }
         if (chunk.isNotEmpty()) {
             chunk.forEach {
-                dataPointService.persist(it)
+                dataPointService.persistHeartRate(it)
                 it.sessions?.forEach { session -> persist(session) }
             }
         }
     }
 
     @Scheduled(timeUnit = TimeUnit.SECONDS, fixedDelay = 10)
-    fun printCount(){
+    fun printCount() {
         if (this.queue.isNotEmpty()) {
             println("Heart Rate Queue Size : ${queue.size}")
         }
