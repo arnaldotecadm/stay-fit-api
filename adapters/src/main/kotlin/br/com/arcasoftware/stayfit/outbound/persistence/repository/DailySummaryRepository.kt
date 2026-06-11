@@ -68,7 +68,7 @@ interface DailySummaryRepository : JpaRepository<DailySummaryEntity, Long> {
             ds.exercise_calories,
             ws.week_steps
         ORDER BY ds."date" DESC;
-        """
+        """,
     )
     fun getDailySummaryEntityByDate(dateTime: LocalDate): DailyActivitySummaryProjection?
 }

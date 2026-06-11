@@ -34,7 +34,7 @@ interface SleepSessionRepository : JpaRepository<SleepSessionEntity, Long> {
             WHERE cast(s.end_time as date) = :localDate
             GROUP BY stage, s.start_time, s.end_time, s.duration
             ORDER BY stage;
-        """
+        """,
     )
     fun getDailySleepStagesSummary(localDate: LocalDate): List<DailySleepStageProjection>
 }

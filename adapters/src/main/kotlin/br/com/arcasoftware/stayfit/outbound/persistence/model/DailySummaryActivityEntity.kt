@@ -8,7 +8,7 @@ import java.time.Duration
 @Table(name = "daily_summary_activity")
 data class DailySummaryActivityEntity(
     val calories: Float,
-    val dataSource :String,
+    val dataSource: String,
     val duration: Duration,
     val exerciseType: String,
     override val userId: String? = null,

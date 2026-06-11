@@ -16,5 +16,5 @@ data class SleepSessionEntity(
     val endTime: Instant,
     val duration: Duration,
     @Transient
-    val stages: List<SleepStageEntity>?
+    val stages: List<SleepStageEntity>?,
 ) : BaseEntity(dataPointUid = dataPointUid, userId = userId)

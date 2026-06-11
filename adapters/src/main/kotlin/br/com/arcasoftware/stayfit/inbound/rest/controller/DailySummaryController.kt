@@ -13,7 +13,7 @@ import java.time.LocalDate
 @RestController
 @CrossOrigin("*")
 class DailySummaryController(
-    private val dailySummaryService: DailySummaryServicePort
+    private val dailySummaryService: DailySummaryServicePort,
 ) : DailySummaryApi {
     override fun postDailySummary(dailySummaryDTO: DailySummaryDTO): ResponseEntity<String> {
         println("Posting daily summary")

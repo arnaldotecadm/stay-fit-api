@@ -13,7 +13,7 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
 import java.net.MalformedURLException
-import java.net.URL
+import java.net.URI
 
 @Component
 class Configuration {
@@ -24,7 +24,7 @@ class Configuration {
             2000,
             2000
         )
-        val jwkURL = URL("https://www.googleapis.com/oauth2/v3/certs")
+        val jwkURL = URI("https://www.googleapis.com/oauth2/v3/certs").toURL()
 
         val keySource: JWKSource<SecurityContext> =
             JWKSourceBuilder.create<SecurityContext>(jwkURL, resourceRetriever).build()

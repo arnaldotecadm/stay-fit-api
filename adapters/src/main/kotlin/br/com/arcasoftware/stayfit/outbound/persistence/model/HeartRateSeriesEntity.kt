@@ -17,5 +17,5 @@ data class HeartRateSeriesEntity(
     val duration: Duration,
     val heartRate: Float,
     val max: Float?,
-    val min: Float?
+    val min: Float?,
 ) : BaseEntity(dataPointUid = dataPointUid, userId = userId)

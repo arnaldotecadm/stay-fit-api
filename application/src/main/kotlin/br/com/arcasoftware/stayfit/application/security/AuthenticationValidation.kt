@@ -13,14 +13,14 @@ class AuthenticationValidation {
     val issuerUrl = "https://accounts.google.com"
 
     fun verifyIfIdToken(claims: JWTClaimsSet) {
-        if (!claims.issuer.equals(issuerUrl)) {
+        if (claims.issuer != issuerUrl) {
             logger.error("Not an ID Token")
             throw ValidationException(ExceptionEnum.AUTHENTICATION_ERROR)
         }
     }
 
     fun validateIssuer(claims: JWTClaimsSet) {
-        if (!claims.issuer.equals(issuerUrl)) {
+        if (claims.issuer != issuerUrl) {
             logger.error("Issuer {} does not match cognito idp {}", claims.issuer, issuerUrl)
             throw ValidationException(ExceptionEnum.AUTHENTICATION_ERROR)
         }

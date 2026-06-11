@@ -6,9 +6,8 @@ import br.com.arcasoftware.stayfit.outbound.persistence.model.ExerciseLocationEn
 import java.util.*
 
 object ExerciseLocationMapper {
-
-    fun ExerciseLocationDTO.toDomain(dataPointUID: UUID): ExerciseLocation {
-        return ExerciseLocation(
+    fun ExerciseLocationDTO.toDomain(dataPointUID: UUID): ExerciseLocation =
+        ExerciseLocation(
             dataPointUid = dataPointUID,
             accuracy = this.accuracy,
             altitude = this.altitude,
@@ -16,7 +15,6 @@ object ExerciseLocationMapper {
             longitude = this.longitude,
             timestamp = this.timestamp,
         )
-    }
 
     fun ExerciseLocation.toEntity(): ExerciseLocationEntity =
         ExerciseLocationEntity(
@@ -39,5 +37,4 @@ object ExerciseLocationMapper {
             longitude = this.longitude,
             timestamp = this.timestamp,
         )
-
 }

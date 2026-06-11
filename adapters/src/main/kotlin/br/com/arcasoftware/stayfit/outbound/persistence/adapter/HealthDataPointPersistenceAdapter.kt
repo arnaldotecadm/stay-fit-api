@@ -13,23 +13,23 @@ import org.springframework.stereotype.Service
 @Service
 class HealthDataPointPersistenceAdapter(
     private val healthDataPointRepository: HealthDataPointRepository,
-    private val healthDataPointHeartRateRepository: HealthDataPointHeartRateRepository
+    private val healthDataPointHeartRateRepository: HealthDataPointHeartRateRepository,
 ) : HealthDataPointPersistencePort {
-    override fun persist(healthDataPoint: HealthDataPoint): HealthDataPoint {
-        return if (this.healthDataPointRepository.findByDataPointUid(healthDataPoint.dataPointUid) == null)
+    override fun persist(healthDataPoint: HealthDataPoint): HealthDataPoint =
+        if (this.healthDataPointRepository.findByDataPointUid(healthDataPoint.dataPointUid) == null) {
             this.healthDataPointRepository
                 .save(healthDataPoint.toEntity())
                 .toDomain()
-        else
+        } else {
             healthDataPoint
-    }
+        }
 
-    override fun persistHeartRate(healthDataPoint: HealthDataPoint): HealthDataPoint {
-        return if (this.healthDataPointHeartRateRepository.findByDataPointUid(healthDataPoint.dataPointUid) == null)
+    override fun persistHeartRate(healthDataPoint: HealthDataPoint): HealthDataPoint =
+        if (this.healthDataPointHeartRateRepository.findByDataPointUid(healthDataPoint.dataPointUid) == null) {
             this.healthDataPointHeartRateRepository
                 .save(healthDataPoint.toEntityHeartRate())
                 .toDomain()
-        else
+        } else {
             healthDataPoint
-    }
+        }
 }

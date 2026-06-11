@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface ExerciseLogRepository : JpaRepository<ExerciseLogEntity, Long>{
+interface ExerciseLogRepository : JpaRepository<ExerciseLogEntity, Long> {
     fun findByDataPointUid(dataPointUid: UUID): ExerciseLogEntity?
+
     fun deleteByDataPointUid(dataPointUid: UUID)
 }

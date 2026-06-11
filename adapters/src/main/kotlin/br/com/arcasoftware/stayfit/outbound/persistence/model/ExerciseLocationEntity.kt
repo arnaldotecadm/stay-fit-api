@@ -16,4 +16,4 @@ data class ExerciseLocationEntity(
     val timestamp: Instant,
     override val dataPointUid: UUID,
     override val userId: String? = null,
-): BaseEntity(dataPointUid = dataPointUid, userId = userId)
+) : BaseEntity(dataPointUid = dataPointUid, userId = userId)

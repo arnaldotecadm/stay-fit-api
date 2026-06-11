@@ -1,0 +1,26 @@
+[versions]
+kotlin = "1.9.25"
+spring = "1.9.25"
+#"5.3.0"
+klinter = "3.12.0"
+springFramework = "3.5.14"
+nimbusJoseJWT = "10.9.1"
+servletApi = "3.0-alpha-1"
+postgres = "42.7.7"
+springbootPlugin = "3.5.5"
+springbootManagement = "1.1.7"
+
+[libraries]
+springStarterWeb = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springFramework" }
+springStarterSecurity = { module = "org.springframework.boot:spring-boot-starter-oauth2-client", version.ref = "springFramework" }
+springStarterDataJpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springFramework" }
+nimbusJoseJWT = { module = "com.nimbusds:nimbus-jose-jwt", version.ref = "nimbusJoseJWT" }
+servletApi = { module = "javax.servlet:servlet-api", version.ref = "servletApi" }
+postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+spring = { id = "org.jetbrains.kotlin.plugin.spring" , version.ref = "spring"}
+klinter = { id = "org.jmailen.kotlinter", version.ref = "klinter" }
+springbootPlugin = { id = "org.springframework.boot", version.ref = "springbootPlugin" }
+springbootManagement = { id = "io.spring.dependency-management", version.ref = "springbootManagement" }

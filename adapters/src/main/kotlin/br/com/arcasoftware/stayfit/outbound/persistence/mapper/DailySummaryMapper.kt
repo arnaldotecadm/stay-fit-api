@@ -19,7 +19,6 @@ import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.DailyAc
 import org.springframework.security.core.context.SecurityContextHolder
 
 object DailySummaryMapper {
-
     fun DailySummaryDTO.toDomain(): DailySummary {
         val userSub = (SecurityContextHolder.getContext().authentication as JwtAuthentication).principal as UserModel
         return DailySummary(
@@ -31,7 +30,7 @@ object DailySummaryMapper {
             totalBurnedCalories = this.totalBurnedCalories,
             distanceWhileActive = this.distanceWhileActive,
             sleepScore = this.sleepScore,
-            exerciseList = this.exerciseList.map { it.toDomain() }
+            exerciseList = this.exerciseList.map { it.toDomain() },
         )
     }
 
@@ -45,7 +44,7 @@ object DailySummaryMapper {
             totalBurnedCalories = this.totalBurnedCalories,
             distanceWhileActive = this.distanceWhileActive,
             sleepScore = this.sleepScore,
-            exerciseList = this.exerciseList.map { it.toEntity() }
+            exerciseList = this.exerciseList.map { it.toEntity() },
         )
 
     fun DailySummaryEntity.toDomain(): DailySummary =
@@ -58,38 +57,35 @@ object DailySummaryMapper {
             totalBurnedCalories = this.totalBurnedCalories,
             distanceWhileActive = this.distanceWhileActive,
             sleepScore = this.sleepScore,
-            exerciseList = this.exerciseList.map { it.toDomain() }
+            exerciseList = this.exerciseList.map { it.toDomain() },
         )
 
-    fun DailySummaryActivityDTO.toDomain(): DailySummaryActivity {
-        return DailySummaryActivity(
+    fun DailySummaryActivityDTO.toDomain(): DailySummaryActivity =
+        DailySummaryActivity(
             calories = this.calories,
             dataSource = this.dataSource,
             duration = this.duration,
-            exerciseType = this.exerciseType
+            exerciseType = this.exerciseType,
         )
-    }
 
-    fun DailySummaryActivity.toEntity(): DailySummaryActivityEntity {
-        return DailySummaryActivityEntity(
+    fun DailySummaryActivity.toEntity(): DailySummaryActivityEntity =
+        DailySummaryActivityEntity(
             calories = this.calories,
             duration = this.duration,
             dataSource = this.dataSource,
-            exerciseType = this.exerciseType
+            exerciseType = this.exerciseType,
         )
-    }
 
-    fun DailySummaryActivityEntity.toDomain(): DailySummaryActivity {
-        return DailySummaryActivity(
+    fun DailySummaryActivityEntity.toDomain(): DailySummaryActivity =
+        DailySummaryActivity(
             calories = this.calories,
             dataSource = this.dataSource,
             duration = this.duration,
-            exerciseType = this.exerciseType
+            exerciseType = this.exerciseType,
         )
-    }
 
-    fun DailyActivitySummaryProjection.toDomain(): DailyActivitySummary {
-        return DailyActivitySummary(
+    fun DailyActivitySummaryProjection.toDomain(): DailyActivitySummary =
+        DailyActivitySummary(
             date = this.date,
             sleepScore = this.sleepScore,
             totalSteps = this.totalSteps,
@@ -100,13 +96,15 @@ object DailySummaryMapper {
             activityCount = this.activityCount,
             activityCaloriesSum = this.activityCaloriesSum,
             weekSteps = JacksonConfig().objectMapper().readValue(this.weekSteps, Array<WeekSteps>::class.java).toList(),
-            activityList = JacksonConfig().objectMapper().readValue(this.activities, Array<DailyActivity>::class.java)
-                .toList()
+            activityList =
+                JacksonConfig()
+                    .objectMapper()
+                    .readValue(this.activities, Array<DailyActivity>::class.java)
+                    .toList(),
         )
-    }
 
-    fun DailyActivitySummary.toDomain(): DailySummaryResponseDTO {
-        return DailySummaryResponseDTO(
+    fun DailyActivitySummary.toDomain(): DailySummaryResponseDTO =
+        DailySummaryResponseDTO(
             date = this.date,
             sleepScore = this.sleepScore,
             totalSteps = this.totalSteps,
@@ -117,13 +115,13 @@ object DailySummaryMapper {
             activityCount = this.activityCount,
             activityCaloriesSum = this.activityCaloriesSum,
             weekSteps = this.weekSteps.map { WeekStepDTO(date = it.date, steps = it.steps) },
-            activityList = this.activityList.map {
-                DailyActivityDTO(
-                    exerciseType = it.exerciseType,
-                    duration = it.duration,
-                    calories = it.calories
-                )
-            }
+            activityList =
+                this.activityList.map {
+                    DailyActivityDTO(
+                        exerciseType = it.exerciseType,
+                        duration = it.duration,
+                        calories = it.calories,
+                    )
+                },
         )
-    }
 }

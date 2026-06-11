@@ -7,28 +7,24 @@ import jakarta.servlet.http.HttpServletRequestWrapper
 import java.io.IOException
 import java.util.zip.GZIPInputStream
 
-
 class GzipHttpServletRequestWrapper(
-    request: HttpServletRequest
+    request: HttpServletRequest,
 ) : HttpServletRequestWrapper(request) {
-
     private val gzipInputStream = GZIPInputStream(request.inputStream)
 
-    private val servletInputStream = object : ServletInputStream() {
+    private val servletInputStream =
+        object : ServletInputStream() {
+            @Throws(IOException::class)
+            override fun read(): Int = gzipInputStream.read()
 
-        @Throws(IOException::class)
-        override fun read(): Int =
-            gzipInputStream.read()
+            override fun isFinished(): Boolean = false
 
-        override fun isFinished(): Boolean = false
+            override fun isReady(): Boolean = true
 
-        override fun isReady(): Boolean = true
-
-        override fun setReadListener(readListener: ReadListener?) {
-            // Not required for synchronous processing
+            override fun setReadListener(readListener: ReadListener?) {
+                // Not required for synchronous processing
+            }
         }
-    }
 
-    override fun getInputStream(): ServletInputStream =
-        servletInputStream
+    override fun getInputStream(): ServletInputStream = servletInputStream
 }

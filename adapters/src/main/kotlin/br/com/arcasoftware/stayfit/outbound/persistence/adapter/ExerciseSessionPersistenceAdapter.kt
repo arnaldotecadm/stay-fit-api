@@ -11,25 +11,24 @@ import org.springframework.stereotype.Service
 
 @Service
 class ExerciseSessionPersistenceAdapter(
-    private val exerciseSessionRepository: ExerciseSessionRepository
+    private val exerciseSessionRepository: ExerciseSessionRepository,
 ) : ExerciseSessionPersistencePort {
-    override fun persist(exerciseSession: ExerciseSession): ExerciseSession {
-        return if (this.exerciseSessionRepository.findByDataPointUid(exerciseSession.dataPointUid) == null)
+    override fun persist(exerciseSession: ExerciseSession): ExerciseSession =
+        if (this.exerciseSessionRepository.findByDataPointUid(exerciseSession.dataPointUid) == null) {
             this.exerciseSessionRepository
                 .save(exerciseSession.toEntity())
                 .toDomain()
-        else
+        } else {
             exerciseSession
+        }
 
-    }
-
-    override fun getBasicExerciseSessionList(): List<BasicExerciseSession> {
-        return this.exerciseSessionRepository.getBasicExerciseSessionList()
+    override fun getBasicExerciseSessionList(): List<BasicExerciseSession> =
+        this.exerciseSessionRepository
+            .getBasicExerciseSessionList()
             .map { it.toDomain() }
-    }
 
-    override fun getExerciseSessionSummary(): List<ExerciseSummary> {
-        return this.exerciseSessionRepository.getExerciseSessionSummary()
+    override fun getExerciseSessionSummary(): List<ExerciseSummary> =
+        this.exerciseSessionRepository
+            .getExerciseSessionSummary()
             .map { it.toDomain() }
-    }
 }

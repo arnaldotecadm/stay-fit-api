@@ -14,9 +14,8 @@ import br.com.arcasoftware.stayfit.outbound.persistence.model.HearRateSeriesHeal
 import java.util.*
 
 object HealthDataPointMapper {
-
-    fun HealthExerciseDataPointDTO.toDomain(): HealthDataPoint {
-        return HealthDataPoint(
+    fun HealthExerciseDataPointDTO.toDomain(): HealthDataPoint =
+        HealthDataPoint(
             id = null,
             healthDataType = HealthDataPointType.EXERCISE,
             clientDataId = this.clientDataId,
@@ -27,12 +26,11 @@ object HealthDataPointMapper {
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
             dataPointUid = UUID.fromString(this.uid),
-            sessions = this.sessions?.map { it.toDomain(UUID.fromString(this.uid)) }
+            sessions = this.sessions?.map { it.toDomain(UUID.fromString(this.uid)) },
         )
-    }
 
-    fun HealthSleepDataPointDTO.toDomain(): HealthDataPoint {
-        return HealthDataPoint(
+    fun HealthSleepDataPointDTO.toDomain(): HealthDataPoint =
+        HealthDataPoint(
             id = null,
             healthDataType = HealthDataPointType.SLEEP,
             clientDataId = this.clientDataId,
@@ -43,12 +41,11 @@ object HealthDataPointMapper {
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
             dataPointUid = UUID.fromString(this.uid),
-            sessions = this.sessions?.map { it.toDomain(UUID.fromString(this.uid)) }
+            sessions = this.sessions?.map { it.toDomain(UUID.fromString(this.uid)) },
         )
-    }
 
-    fun HealthHeartRateSeriesDataPointDTO.toDomain(): HealthDataPoint {
-        return HealthDataPoint(
+    fun HealthHeartRateSeriesDataPointDTO.toDomain(): HealthDataPoint =
+        HealthDataPoint(
             id = null,
             healthDataType = HealthDataPointType.HEART_RATE,
             clientDataId = this.clientDataId,
@@ -59,13 +56,10 @@ object HealthDataPointMapper {
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
             dataPointUid = UUID.fromString(this.uid),
-            sessions = this.sessions?.map { it.toDomain(UUID.fromString(this.uid)) }
+            sessions = this.sessions?.map { it.toDomain(UUID.fromString(this.uid)) },
         )
-    }
 
-    fun DataSourceDTO.toDomain(): String {
-        return "${this.appId}:${this.deviceId}"
-    }
+    fun DataSourceDTO.toDomain(): String = "${this.appId}:${this.deviceId}"
 
     fun HealthDataPoint.toEntity(): HealthDataPointEntity =
         HealthDataPointEntity(
@@ -78,7 +72,7 @@ object HealthDataPointMapper {
             startTime = this.startTime,
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
-            dataPointUid = this.dataPointUid
+            dataPointUid = this.dataPointUid,
         )
 
     fun HealthDataPoint.toEntityHeartRate(): HearRateSeriesHealthDataPointEntity =
@@ -91,7 +85,7 @@ object HealthDataPointMapper {
             startTime = this.startTime,
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
-            dataPointUid = this.dataPointUid
+            dataPointUid = this.dataPointUid,
         )
 
     fun HealthDataPointEntity.toDomain(): HealthDataPoint =
@@ -107,6 +101,6 @@ object HealthDataPointMapper {
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
             dataPointUid = this.dataPointUid,
-            sessions = emptyList()
+            sessions = emptyList(),
         )
 }

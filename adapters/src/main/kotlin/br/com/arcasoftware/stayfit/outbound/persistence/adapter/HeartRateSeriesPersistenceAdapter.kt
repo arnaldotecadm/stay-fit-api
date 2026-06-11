@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service
 class HeartRateSeriesPersistenceAdapter(
     private val heartRateSeriesRepository: HeartRateSeriesRepository,
 ) : HeartRateSeriesPersistencePort {
-    override fun persist(heartRateSeries: HeartRateSeries): HeartRateSeries {
-        return if (heartRateSeriesRepository.findByDataPointUid(heartRateSeries.dataPointUid) == null)
+    override fun persist(heartRateSeries: HeartRateSeries): HeartRateSeries =
+        if (heartRateSeriesRepository.findByDataPointUid(heartRateSeries.dataPointUid) == null) {
             heartRateSeriesRepository
                 .save(heartRateSeries.toEntity())
                 .toDomain()
-        else
+        } else {
             heartRateSeries
-    }
+        }
 }

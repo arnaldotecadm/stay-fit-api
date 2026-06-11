@@ -1,7 +1,7 @@
 plugins {
-    kotlin("jvm") version "1.9.25"
-    kotlin("plugin.spring") version "1.9.25"
-    id("org.jmailen.kotlinter")
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.spring)
+    alias(libs.plugins.klinter)
 }
 
 repositories {
@@ -9,5 +9,5 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-security:3.5.5")
+    implementation(libs.springStarterSecurity)
 }

@@ -14,7 +14,7 @@ import java.time.LocalDate
 @RestController
 @CrossOrigin("*")
 class SleepSessionController(
-    private val sleepSessionServicePort: SleepSessionServicePort
+    private val sleepSessionServicePort: SleepSessionServicePort,
 ) : SleepsApi {
     override fun postSleepSession(healthSleepDataPointDTO: HealthSleepDataPointDTO): ResponseEntity<String> {
         println("Posting sleep session")
@@ -22,9 +22,8 @@ class SleepSessionController(
         return ResponseEntity.ok().build()
     }
 
-    override fun getSleepStage(localDate: LocalDate): ResponseEntity<DailySleepDTO> {
-        return this.sleepSessionServicePort.getDailySleepStagesSummary(localDate).let {
+    override fun getSleepStage(localDate: LocalDate): ResponseEntity<DailySleepDTO> =
+        this.sleepSessionServicePort.getDailySleepStagesSummary(localDate).let {
             ResponseEntity.ok(it.toDTO())
         } ?: ResponseEntity.noContent().build()
-    }
 }

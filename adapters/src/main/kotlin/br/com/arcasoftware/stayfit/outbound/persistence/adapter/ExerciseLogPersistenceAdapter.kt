@@ -10,13 +10,12 @@ import java.util.UUID
 
 @Service
 class ExerciseLogPersistenceAdapter(
-    private val exerciseLogRepository: ExerciseLogRepository
+    private val exerciseLogRepository: ExerciseLogRepository,
 ) : ExerciseLogPersistencePort {
-    override fun persist(exerciseLog: ExerciseLog): ExerciseLog {
-        return this.exerciseLogRepository
+    override fun persist(exerciseLog: ExerciseLog): ExerciseLog =
+        this.exerciseLogRepository
             .save(exerciseLog.toEntity())
             .toDomain()
-    }
 
     override fun deleteByDataPointUid(dataPointUid: UUID) {
         exerciseLogRepository.deleteByDataPointUid(dataPointUid)

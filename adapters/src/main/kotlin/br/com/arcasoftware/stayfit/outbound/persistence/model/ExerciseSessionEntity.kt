@@ -44,7 +44,7 @@ data class ExerciseSessionEntity(
     @Transient
     val route: List<ExerciseLocationEntity>?,
     val startTime: Instant,
-    //val swimmingLog: Any?,
+    // val swimmingLog: Any?,
     val vo2Max: Float? = null,
     override val dataPointUid: UUID,
     override val userId: String? = null,

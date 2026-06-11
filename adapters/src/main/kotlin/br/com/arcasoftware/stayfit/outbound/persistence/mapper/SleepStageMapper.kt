@@ -7,23 +7,20 @@ import br.com.arcasoftware.stayfit.outbound.persistence.model.SleepStageEntity
 import java.util.*
 
 object SleepStageMapper {
-
-    fun SleepStageDTO.toDomain(dataPointUID: UUID): SleepStage {
-        return SleepStage(
+    fun SleepStageDTO.toDomain(dataPointUID: UUID): SleepStage =
+        SleepStage(
             dataPointUid = dataPointUID,
             startTime = this.startTime,
             endTime = this.endTime,
-            stage = SleepStageType.valueOf(this.stage.name)
+            stage = SleepStageType.valueOf(this.stage.name),
         )
-    }
-
 
     fun SleepStage.toEntity(): SleepStageEntity =
         SleepStageEntity(
             dataPointUid = this.dataPointUid,
             startTime = this.startTime,
             endTime = this.endTime,
-            stage = this.stage
+            stage = this.stage,
         )
 
     fun SleepStageEntity.toDomain(): SleepStage =
@@ -31,7 +28,6 @@ object SleepStageMapper {
             dataPointUid = this.dataPointUid,
             startTime = this.startTime,
             endTime = this.endTime,
-            stage = this.stage
+            stage = this.stage,
         )
-
 }

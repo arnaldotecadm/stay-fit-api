@@ -10,13 +10,12 @@ import java.util.*
 
 @Service
 class ExerciseLocationPersistenceAdapter(
-    private val exerciseLocationRepository: ExerciseLocationRepository
+    private val exerciseLocationRepository: ExerciseLocationRepository,
 ) : ExerciseLocationPersistencePort {
-    override fun persist(exerciseLocation: ExerciseLocation): ExerciseLocation {
-        return this.exerciseLocationRepository
+    override fun persist(exerciseLocation: ExerciseLocation): ExerciseLocation =
+        this.exerciseLocationRepository
             .save(exerciseLocation.toEntity())
             .toDomain()
-    }
 
     override fun deleteByDataPointUid(dataPointUid: UUID) {
         this.exerciseLocationRepository.deleteByDataPointUid(dataPointUid)

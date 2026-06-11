@@ -28,14 +28,15 @@ interface ExerciseSessionRepository : JpaRepository<ExerciseSessionEntity, Long>
             from stay_fit.health_datapoint_view dp
             left join stay_fit.exercise_session es on es.data_point_uid = dp.data_point_uid
             order by TO_CHAR(dp.start_time, 'YYYY-MM-DD HH24:MI:SS') desc
-        """
+        """,
     )
     fun getBasicExerciseSessionList(): List<BasicExerciseSessionProjection>
 
     fun findByDataPointUid(dataPointUid: UUID): ExerciseSessionEntity?
 
     @Query(
-        nativeQuery = true, value = """
+        nativeQuery = true,
+        value = """
         select
             hd.data_point_uid,
             hd.health_data_type,
@@ -51,7 +52,7 @@ interface ExerciseSessionRepository : JpaRepository<ExerciseSessionEntity, Long>
         join stay_fit.health_datapoint_latest_view hd 
             on hd.data_point_uid = es.data_point_uid
         order by es.start_time desc
-    """
+    """,
     )
     fun getExerciseSessionSummary(): List<ExerciseSummaryProjection>
 }

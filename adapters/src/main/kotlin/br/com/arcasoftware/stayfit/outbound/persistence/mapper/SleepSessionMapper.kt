@@ -15,67 +15,64 @@ import java.time.Duration
 import java.util.UUID
 
 object SleepSessionMapper {
-
-    fun SleepSessionDTO.toDomain(dataPointUID: UUID): SleepSession {
-        return SleepSession(
+    fun SleepSessionDTO.toDomain(dataPointUID: UUID): SleepSession =
+        SleepSession(
             dataPointUid = dataPointUID,
             duration = this.duration,
             endTime = this.endTime,
             startTime = this.startTime,
-            stages = this.stages?.map { stage -> stage.toDomain(dataPointUID) }
+            stages = this.stages?.map { stage -> stage.toDomain(dataPointUID) },
         )
-    }
 
-    fun SleepSession.toEntity(): SleepSessionEntity {
-        return SleepSessionEntity(
+    fun SleepSession.toEntity(): SleepSessionEntity =
+        SleepSessionEntity(
             dataPointUid = this.dataPointUid,
             duration = this.duration,
             endTime = this.endTime,
             startTime = this.startTime,
-            stages = this.stages?.map { it.toEntity() }
+            stages = this.stages?.map { it.toEntity() },
         )
-    }
 
-    fun SleepSessionEntity.toDomain(): SleepSession {
-        return SleepSession(
+    fun SleepSessionEntity.toDomain(): SleepSession =
+        SleepSession(
             dataPointUid = this.dataPointUid,
             userId = this.userId,
             duration = this.duration,
             endTime = this.endTime,
             startTime = this.startTime,
-            stages = this.stages?.map { it.toDomain() }
+            stages = this.stages?.map { it.toDomain() },
         )
-    }
 
     fun List<DailySleepStageProjection>.toDomain(): DailySleep {
-        if(this.isEmpty()) {
+        if (this.isEmpty()) {
             return DailySleep()
         }
-        val dailyStages = this.map { stages ->
-            DailySleepStage(
-                stage = SleepStageType.entries[stages.stage],
-                durationInMinutes = stages.durationMinutes
-            )
-        }
+        val dailyStages =
+            this.map { stages ->
+                DailySleepStage(
+                    stage = SleepStageType.entries[stages.stage],
+                    durationInMinutes = stages.durationMinutes,
+                )
+            }
         return DailySleep(
             startTime = this.first().startTime,
             endTime = this.first().endTime,
             duration = Duration.ofNanos(this.first().duration),
-            stages = dailyStages
+            stages = dailyStages,
         )
     }
 
-    fun DailySleep.toDTO(): DailySleepDTO {
-        return DailySleepDTO(
+    fun DailySleep.toDTO(): DailySleepDTO =
+        DailySleepDTO(
             startTime = this.startTime,
             endTime = this.endTime,
             duration = this.duration,
-            stages = this.stages?.map { stage ->
-                DailySleepStageDTO(
-                    stage = stage.stage.name,
-                    durationInMinutes = stage.durationInMinutes
-                )
-            }
+            stages =
+                this.stages?.map { stage ->
+                    DailySleepStageDTO(
+                        stage = stage.stage.name,
+                        durationInMinutes = stage.durationInMinutes,
+                    )
+                },
         )
-    }
 }

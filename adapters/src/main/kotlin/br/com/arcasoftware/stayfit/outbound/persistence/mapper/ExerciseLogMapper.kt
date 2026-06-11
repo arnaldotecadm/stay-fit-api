@@ -6,18 +6,16 @@ import br.com.arcasoftware.stayfit.outbound.persistence.model.ExerciseLogEntity
 import java.util.*
 
 object ExerciseLogMapper {
-
-    fun ExerciseLogDTO.toDomain(dataPointUID: UUID): ExerciseLog {
-        return ExerciseLog(
+    fun ExerciseLogDTO.toDomain(dataPointUID: UUID): ExerciseLog =
+        ExerciseLog(
             dataPointUid = dataPointUID,
             cadence = this.cadence,
             count = this.count,
             heartRate = this.heartRate,
             power = this.power,
             speed = this.speed,
-            timestamp = this.timestamp
+            timestamp = this.timestamp,
         )
-    }
 
     fun ExerciseLog.toEntity(): ExerciseLogEntity =
         ExerciseLogEntity(
@@ -28,7 +26,7 @@ object ExerciseLogMapper {
             heartRate = this.heartRate,
             power = this.power,
             speed = this.speed,
-            timestamp = this.timestamp
+            timestamp = this.timestamp,
         )
 
     fun ExerciseLogEntity.toDomain(): ExerciseLog =
@@ -40,7 +38,6 @@ object ExerciseLogMapper {
             heartRate = this.heartRate,
             power = this.power,
             speed = this.speed,
-            timestamp = this.timestamp
+            timestamp = this.timestamp,
         )
-
 }

@@ -8,21 +8,19 @@ import br.com.arcasoftware.stayfit.outbound.persistence.model.HeartRateSeriesEnt
 import java.util.UUID
 
 object HeartRateSeriesMapper {
-
-    fun HeartRateSeriesDTO.toDomain(dataPointUID: UUID): HeartRateSeries {
-        return HeartRateSeries(
+    fun HeartRateSeriesDTO.toDomain(dataPointUID: UUID): HeartRateSeries =
+        HeartRateSeries(
             dataPointUid = dataPointUID,
             duration = this.duration,
             endTime = this.endTime,
             startTime = this.startTime,
             heartRate = this.heartRate,
             min = this.min,
-            max = this.max
+            max = this.max,
         )
-    }
 
-    fun HeartRateSeries.toEntity(): HeartRateSeriesEntity {
-        return HeartRateSeriesEntity(
+    fun HeartRateSeries.toEntity(): HeartRateSeriesEntity =
+        HeartRateSeriesEntity(
             dataPointUid = this.dataPointUid,
             userId = this.userId,
             duration = this.duration,
@@ -30,12 +28,11 @@ object HeartRateSeriesMapper {
             startTime = this.startTime,
             heartRate = this.heartRate,
             min = this.min,
-            max = this.max
+            max = this.max,
         )
-    }
 
-    fun HeartRateSeriesEntity.toDomain(): HeartRateSeries {
-        return HeartRateSeries(
+    fun HeartRateSeriesEntity.toDomain(): HeartRateSeries =
+        HeartRateSeries(
             dataPointUid = this.dataPointUid,
             userId = this.userId,
             duration = this.duration,
@@ -43,9 +40,8 @@ object HeartRateSeriesMapper {
             startTime = this.startTime,
             heartRate = this.heartRate,
             min = this.min,
-            max = this.max
+            max = this.max,
         )
-    }
 
     fun HearRateSeriesHealthDataPointEntity.toDomain(): HealthDataPoint =
         HealthDataPoint(
@@ -60,6 +56,6 @@ object HeartRateSeriesMapper {
             updateTime = this.updateTime,
             zoneOffset = this.zoneOffset,
             dataPointUid = this.dataPointUid,
-            sessions = emptyList()
+            sessions = emptyList(),
         )
 }

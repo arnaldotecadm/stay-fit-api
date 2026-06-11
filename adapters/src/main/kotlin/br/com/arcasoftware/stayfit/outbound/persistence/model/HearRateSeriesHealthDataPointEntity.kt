@@ -13,7 +13,7 @@ import java.util.*
 @Entity
 @Table(
     name = "health_datapoint_heart_rate",
-    indexes = [Index(name = "ix_health_datapoint_heart_rate_datapoint_uid", columnList = "dataPointUid")]
+    indexes = [Index(name = "ix_health_datapoint_heart_rate_datapoint_uid", columnList = "dataPointUid")],
 )
 data class HearRateSeriesHealthDataPointEntity(
     val clientDataId: String?,

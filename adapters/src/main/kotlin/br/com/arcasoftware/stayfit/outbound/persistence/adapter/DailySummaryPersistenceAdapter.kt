@@ -13,10 +13,9 @@ import java.time.LocalDate
 class DailySummaryPersistenceAdapter(
     private val dailySummaryRepository: DailySummaryRepository,
 ) : DailySummaryPersistencePort {
-
     override fun persist(dailySummary: DailySummary): DailySummary {
         dailySummaryRepository.findByDate(dailySummary.date)?.let {
-            dailySummaryRepository.deleteById(it.id)
+            dailySummaryRepository.deleteById(it.id!!)
         }
 
         return dailySummaryRepository
@@ -24,7 +23,6 @@ class DailySummaryPersistenceAdapter(
             .toDomain()
     }
 
-    override fun getDailySummaryEntityByDate(localDate: LocalDate): DailyActivitySummary? {
-        return this.dailySummaryRepository.getDailySummaryEntityByDate(localDate)?.toDomain()
-    }
+    override fun getDailySummaryEntityByDate(localDate: LocalDate): DailyActivitySummary? =
+        this.dailySummaryRepository.getDailySummaryEntityByDate(localDate)?.toDomain()
 }

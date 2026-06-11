@@ -11,18 +11,17 @@ import java.time.LocalDate
 
 @Service
 class SleepSessionPersistenceAdapter(
-    private val sleepSessionRepository: SleepSessionRepository
+    private val sleepSessionRepository: SleepSessionRepository,
 ) : SleepSessionPersistencePort {
-    override fun persist(sleepSession: SleepSession): SleepSession {
-        return if (sleepSessionRepository.findByDataPointUid(sleepSession.dataPointUid) == null)
+    override fun persist(sleepSession: SleepSession): SleepSession =
+        if (sleepSessionRepository.findByDataPointUid(sleepSession.dataPointUid) == null) {
             sleepSessionRepository
                 .save(sleepSession.toEntity())
                 .toDomain()
-        else
+        } else {
             sleepSession
-    }
+        }
 
-    override fun getDailySleepStagesSummary(localDate: LocalDate): DailySleep {
-        return this.sleepSessionRepository.getDailySleepStagesSummary(localDate = localDate).toDomain()
-    }
+    override fun getDailySleepStagesSummary(localDate: LocalDate): DailySleep =
+        this.sleepSessionRepository.getDailySleepStagesSummary(localDate = localDate).toDomain()
 }

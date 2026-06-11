@@ -1,6 +1,7 @@
 plugins {
-    kotlin("jvm") version "1.9.25"
-    kotlin("plugin.spring") version "1.9.25"
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.spring)
+    //alias(libs.plugins.klinter)
     id("io.spring.dependency-management") version "1.1.7"
     id("org.openapi.generator") version "7.15.0"
     kotlin("plugin.jpa") version "1.9.25"
@@ -18,18 +19,18 @@ dependencies {
     implementation(project(":application"))
     implementation(project(":domain"))
 
-    implementation("org.springframework.boot:spring-boot-starter-web:3.5.5")
-    implementation("org.springframework.boot:spring-boot-starter-security:3.5.5")
+    implementation(libs.springStarterWeb)
+    implementation(libs.springStarterSecurity)
+    implementation(libs.springStarterDataJpa)
 
     implementation("javax.validation:validation-api:2.0.1.Final")
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.20")
     implementation("io.swagger.core.v3:swagger-annotations:2.2.36")
-    compileOnly("javax.servlet:servlet-api:3.0-alpha-1")
     implementation("io.swagger.core.v3:swagger-models:2.2.36")
     implementation("jakarta.validation:jakarta.validation-api:3.1.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.2")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.5.5")
+    compileOnly(libs.servletApi)
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")

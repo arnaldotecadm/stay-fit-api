@@ -10,13 +10,12 @@ import java.util.UUID
 
 @Service
 class SleepStagePersistenceAdapter(
-    private val sleepStageRepository: SleepStageRepository
+    private val sleepStageRepository: SleepStageRepository,
 ) : SleepStagePersistencePort {
-    override fun persist(sleepStage: SleepStage): SleepStage {
-        return sleepStageRepository
+    override fun persist(sleepStage: SleepStage): SleepStage =
+        sleepStageRepository
             .save(sleepStage.toEntity())
             .toDomain()
-    }
 
     override fun deleteByDataPointUid(dataPointUid: UUID) {
         this.sleepStageRepository.deleteByDataPointUid(dataPointUid)

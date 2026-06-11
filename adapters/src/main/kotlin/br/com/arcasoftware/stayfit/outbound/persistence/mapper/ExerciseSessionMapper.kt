@@ -17,9 +17,8 @@ import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.Exercis
 import java.util.UUID
 
 object ExerciseSessionMapper {
-
-    fun ExerciseSessionDTO.toDomain(dataPointUID: UUID): Session {
-        return ExerciseSession(
+    fun ExerciseSessionDTO.toDomain(dataPointUID: UUID): Session =
+        ExerciseSession(
             dataPointUid = dataPointUID,
             altitudeGain = this.altitudeGain,
             altitudeLoss = this.altitudeLoss,
@@ -53,12 +52,11 @@ object ExerciseSessionMapper {
             route = this.route?.map { it.toDomain(dataPointUID) },
             startTime = this.startTime,
             swimmingLog = null,
-            vo2Max = this.vo2Max
+            vo2Max = this.vo2Max,
         )
-    }
 
-    fun ExerciseSession.toEntity(): ExerciseSessionEntity {
-        return ExerciseSessionEntity(
+    fun ExerciseSession.toEntity(): ExerciseSessionEntity =
+        ExerciseSessionEntity(
             dataPointUid = this.dataPointUid,
             userId = this.userId,
             altitudeGain = this.altitudeGain,
@@ -92,13 +90,12 @@ object ExerciseSessionMapper {
             minHeartRate = this.minHeartRate,
             route = this.route?.map { it.toEntity() },
             startTime = this.startTime,
-            //swimmingLog = null,
-            vo2Max = this.vo2Max
+            // swimmingLog = null,
+            vo2Max = this.vo2Max,
         )
-    }
 
-    fun ExerciseSessionEntity.toDomain(): ExerciseSession {
-        return ExerciseSession(
+    fun ExerciseSessionEntity.toDomain(): ExerciseSession =
+        ExerciseSession(
             dataPointUid = this.dataPointUid,
             altitudeGain = this.altitudeGain,
             altitudeLoss = this.altitudeLoss,
@@ -133,12 +130,11 @@ object ExerciseSessionMapper {
             route = this.route?.map { it.toDomain() },
             startTime = this.startTime,
             swimmingLog = null,
-            vo2Max = this.vo2Max
+            vo2Max = this.vo2Max,
         )
-    }
 
-    fun BasicExerciseSessionProjection.toDomain(): BasicExerciseSession {
-        return BasicExerciseSession(
+    fun BasicExerciseSessionProjection.toDomain(): BasicExerciseSession =
+        BasicExerciseSession(
             startTime = this.startTime,
             endTime = this.endTime,
             type = this.type,
@@ -149,12 +145,11 @@ object ExerciseSessionMapper {
             maxHeartRate = this.maxHeartRate,
             meanCadence = this.meanCadence,
             meanSpeed = this.meanSpeed,
-            maxSpeed = this.maxSpeed
+            maxSpeed = this.maxSpeed,
         )
-    }
 
-    fun ExerciseSummaryProjection.toDomain(): ExerciseSummary {
-        return ExerciseSummary(
+    fun ExerciseSummaryProjection.toDomain(): ExerciseSummary =
+        ExerciseSummary(
             dataPointUid = this.dataPointUid,
             healthDataType = this.healthDataType,
             exerciseType = this.exerciseType,
@@ -166,10 +161,9 @@ object ExerciseSessionMapper {
             duration = this.duration,
             calories = this.calories,
         )
-    }
 
-    fun ExerciseSummary.toDto(): ExerciseSummaryDTO {
-        return ExerciseSummaryDTO(
+    fun ExerciseSummary.toDto(): ExerciseSummaryDTO =
+        ExerciseSummaryDTO(
             dataPointUid = this.dataPointUid.toString(),
             healthDataType = this.healthDataType,
             exerciseType = this.exerciseType,
@@ -181,5 +175,4 @@ object ExerciseSessionMapper {
             duration = this.duration,
             calories = this.calories,
         )
-    }
 }

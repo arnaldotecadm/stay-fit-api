@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @CrossOrigin("*")
 class ExerciseSessionController(
-    private val exerciseSessionService: ExerciseSessionServicePort
+    private val exerciseSessionService: ExerciseSessionServicePort,
 ) : ExercisesApi {
     override fun postExerciseSession(healthExerciseDataPointDTO: HealthExerciseDataPointDTO): ResponseEntity<String> {
         println("Posting exercise")
