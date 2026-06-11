@@ -1,11 +1,13 @@
 package br.com.arcasoftware.stayfit.outbound.persistence.adapter
 
 import br.com.arcasoftware.stayfit.application.port.outbound.persistence.SleepSessionPersistencePort
+import br.com.arcasoftware.stayfit.domain.DailySleep
 import br.com.arcasoftware.stayfit.domain.SleepSession
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepSessionMapper.toDomain
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepSessionMapper.toEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.repository.SleepSessionRepository
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class SleepSessionPersistenceAdapter(
@@ -18,5 +20,9 @@ class SleepSessionPersistenceAdapter(
                 .toDomain()
         else
             sleepSession
+    }
+
+    override fun getDailySleepStagesSummary(localDate: LocalDate): DailySleep {
+        return this.sleepSessionRepository.getDailySleepStagesSummary(localDate = localDate).toDomain()
     }
 }

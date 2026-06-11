@@ -4,6 +4,7 @@ import java.time.Instant
 import java.util.UUID
 
 data class ExerciseLocation(
+    val userId: String? = null,
     val dataPointUid: UUID,
     val accuracy: Float?,
     val altitude: Float?,

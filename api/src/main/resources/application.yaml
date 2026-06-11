@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=stay_fit
     driverClassName: org.postgresql.Driver
-    username: user
-    password: password
+    username: postgres
+    password: postgres
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -15,3 +15,7 @@ spring:
         format_sql: true
         type: trace
         default_schema: stay_fit
+
+logging:
+  level:
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG

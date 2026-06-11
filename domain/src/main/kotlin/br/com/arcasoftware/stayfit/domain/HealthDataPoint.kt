@@ -6,6 +6,7 @@ import java.util.*
 
 data class HealthDataPoint(
     val id: Long?,
+    val userId: String? = null,
     val healthDataType: HealthDataPointType,
     val clientDataId: String?,
     val clientVersion: Int?,

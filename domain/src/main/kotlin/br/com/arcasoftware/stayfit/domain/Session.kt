@@ -5,6 +5,7 @@ import java.util.UUID
 
 interface Session {
     val dataPointUid: UUID
+    val userId: String?
     val startTime: Instant
     val endTime: Instant
 }

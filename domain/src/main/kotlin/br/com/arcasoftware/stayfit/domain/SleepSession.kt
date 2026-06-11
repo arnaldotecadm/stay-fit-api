@@ -8,6 +8,7 @@ data class SleepSession(
     override val dataPointUid: UUID,
     override val startTime: Instant,
     override val endTime: Instant,
+    override val userId: String? = null,
     val duration: Duration,
     val stages: List<SleepStage>?
 ) : Session

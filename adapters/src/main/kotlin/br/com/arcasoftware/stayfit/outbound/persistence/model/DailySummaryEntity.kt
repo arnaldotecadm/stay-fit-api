@@ -10,6 +10,7 @@ import java.time.LocalDate
 @Entity
 @Table(name = "daily_summary", indexes = [Index(name = "ix_daily_summary_date", columnList = "date")])
 data class DailySummaryEntity(
+    override val userId: String? = null,
     val date: LocalDate,
     val totalSteps: Long,
     val activeTimeInMinutes: Long,
@@ -18,4 +19,4 @@ data class DailySummaryEntity(
     val distanceWhileActive: Long,
     val sleepScore: Long,
     @OneToMany(cascade = [CascadeType.ALL]) val exerciseList: List<DailySummaryActivityEntity>
-) : BaseEntity()
+) : BaseEntity(userId = userId)

@@ -3,6 +3,7 @@ package br.com.arcasoftware.stayfit.domain
 import java.time.LocalDate
 
 data class DailySummary(
+    val userId: String? = null,
     val date: LocalDate,
     val totalSteps: Long,
     val activeTimeInMinutes: Long,

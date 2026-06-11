@@ -15,5 +15,6 @@ data class ExerciseLogEntity(
     val power: Float?,
     val speed: Float?,
     val timestamp: Instant,
-    override val dataPointUid: UUID
-) : BaseEntity(dataPointUid = dataPointUid)
+    override val dataPointUid: UUID,
+    override val userId: String? = null,
+) : BaseEntity(dataPointUid = dataPointUid, userId = userId)

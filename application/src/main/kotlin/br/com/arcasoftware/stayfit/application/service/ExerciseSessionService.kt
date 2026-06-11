@@ -12,6 +12,7 @@ import br.com.arcasoftware.stayfit.domain.HealthDataPoint
 import br.com.arcasoftware.stayfit.domain.Session
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.TimeUnit
 
@@ -24,12 +25,14 @@ class ExerciseSessionService(
 ) : ExerciseSessionServicePort {
 
     private val queue = ConcurrentLinkedQueue<HealthDataPoint>()
+    private var printedEmpty = false
 
     override fun enqueue(healthDataPoint: HealthDataPoint) {
         this.queue.add(healthDataPoint)
     }
 
     @Scheduled(fixedDelay = 100)
+    @Transactional
     fun processQueue() {
         if (this.queue.isNotEmpty()) {
             val dataPoint = queue.poll()
@@ -42,6 +45,11 @@ class ExerciseSessionService(
     fun printCount() {
         if (this.queue.isNotEmpty()) {
             println("Exercise Queue Size : ${queue.size}")
+        } else {
+            if (!this.printedEmpty) {
+                println("Exercise Queue Empty")
+                this.printedEmpty = true
+            }
         }
     }
 

@@ -14,8 +14,7 @@ import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseLogMapper
 import br.com.arcasoftware.stayfit.outbound.persistence.model.ExerciseSessionEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.BasicExerciseSessionProjection
 import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.ExerciseSummaryProjection
-import java.time.Duration
-import java.util.*
+import java.util.UUID
 
 object ExerciseSessionMapper {
 
@@ -61,6 +60,7 @@ object ExerciseSessionMapper {
     fun ExerciseSession.toEntity(): ExerciseSessionEntity {
         return ExerciseSessionEntity(
             dataPointUid = this.dataPointUid,
+            userId = this.userId,
             altitudeGain = this.altitudeGain,
             altitudeLoss = this.altitudeLoss,
             calories = this.calories,
@@ -102,6 +102,7 @@ object ExerciseSessionMapper {
             dataPointUid = this.dataPointUid,
             altitudeGain = this.altitudeGain,
             altitudeLoss = this.altitudeLoss,
+            userId = this.userId,
             calories = this.calories,
             comment = this.comment,
             count = this.count,
@@ -167,7 +168,7 @@ object ExerciseSessionMapper {
         )
     }
 
-    fun ExerciseSummary.toDto(): ExerciseSummaryDTO{
+    fun ExerciseSummary.toDto(): ExerciseSummaryDTO {
         return ExerciseSummaryDTO(
             dataPointUid = this.dataPointUid.toString(),
             healthDataType = this.healthDataType,

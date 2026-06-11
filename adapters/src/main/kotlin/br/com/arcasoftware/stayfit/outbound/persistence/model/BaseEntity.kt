@@ -10,5 +10,6 @@ open class BaseEntity(
     @Id
     @GeneratedValue
     open val id: Long? = null,
-    open val dataPointUid: UUID? = null
+    open val dataPointUid: UUID? = null,
+    open val userId: String? = null,
 )

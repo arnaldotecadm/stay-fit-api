@@ -20,6 +20,7 @@ object ExerciseLocationMapper {
 
     fun ExerciseLocation.toEntity(): ExerciseLocationEntity =
         ExerciseLocationEntity(
+            userId = this.userId,
             dataPointUid = this.dataPointUid,
             accuracy = this.accuracy,
             altitude = this.altitude,
@@ -30,6 +31,7 @@ object ExerciseLocationMapper {
 
     fun ExerciseLocationEntity.toDomain(): ExerciseLocation =
         ExerciseLocation(
+            userId = this.userId,
             dataPointUid = this.dataPointUid,
             accuracy = this.accuracy,
             altitude = this.altitude,

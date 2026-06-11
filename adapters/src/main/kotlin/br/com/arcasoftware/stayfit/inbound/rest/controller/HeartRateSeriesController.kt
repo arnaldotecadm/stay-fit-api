@@ -1,6 +1,5 @@
 package br.com.arcasoftware.stayfit.inbound.rest.controller
 
-import br.com.arcasoftware.stayfit.application.port.inbound.service.HealthDataPointServicePort
 import br.com.arcasoftware.stayfit.application.port.inbound.service.HeartRateSeriesServicePort
 import br.com.arcasoftware.stayfit.controller.HeartRateApi
 import br.com.arcasoftware.stayfit.model.HealthHeartRateSeriesDataPointDTO
@@ -13,7 +12,7 @@ class HeartRateSeriesController(
     private val heartRateSeriesServicePort: HeartRateSeriesServicePort
 ) : HeartRateApi {
     override fun postHearRateSeries(healthHeartRateSeriesDataPointDTO: List<HealthHeartRateSeriesDataPointDTO>): ResponseEntity<String> {
-        println("Posting hear rate series: ${healthHeartRateSeriesDataPointDTO.size}")
+        println("Posting heart rate series: ${healthHeartRateSeriesDataPointDTO.size}")
         val healthDataPoints = healthHeartRateSeriesDataPointDTO.map { dataPoint -> dataPoint.toDomain() }
         heartRateSeriesServicePort.enqueue(healthDataPoints)
         return ResponseEntity.ok().build()

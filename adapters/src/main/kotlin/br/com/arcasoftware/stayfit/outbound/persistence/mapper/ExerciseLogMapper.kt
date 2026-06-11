@@ -21,6 +21,7 @@ object ExerciseLogMapper {
 
     fun ExerciseLog.toEntity(): ExerciseLogEntity =
         ExerciseLogEntity(
+            userId = this.userId,
             dataPointUid = this.dataPointUid,
             cadence = this.cadence,
             count = this.count,
@@ -32,6 +33,7 @@ object ExerciseLogMapper {
 
     fun ExerciseLogEntity.toDomain(): ExerciseLog =
         ExerciseLog(
+            userId = this.userId,
             dataPointUid = this.dataPointUid,
             cadence = this.cadence,
             count = this.count,

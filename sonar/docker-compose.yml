@@ -1,0 +1,7 @@
+version: '3.2'
+services:
+  sonar:
+    image: sonar-my-expenses
+    build: .
+    ports:
+      - "10000:9000"

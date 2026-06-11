@@ -5,6 +5,7 @@ import java.util.UUID
 
 data class ExerciseLog(
     val dataPointUid: UUID,
+    val userId: String? = null,
     val cadence: Float?,
     val count: Int?,
     val heartRate: Float?,

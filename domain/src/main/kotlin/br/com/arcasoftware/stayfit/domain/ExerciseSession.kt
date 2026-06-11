@@ -8,6 +8,7 @@ data class ExerciseSession(
     override val dataPointUid: UUID,
     override val startTime: Instant,
     override val endTime: Instant,
+    override val userId: String? = null,
     val altitudeGain: Float?,
     val altitudeLoss: Float?,
     val calories: Float,

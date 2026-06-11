@@ -47,8 +47,8 @@ interface ExerciseSessionRepository : JpaRepository<ExerciseSessionEntity, Long>
             coalesce(es.count, 0) as count,
             cast(make_interval(secs => es.duration / 1000000000) as varchar) as duration,
             es.calories 
-        from exercise_session es
-        join health_datapoint_latest_view hd 
+        from stay_fit.exercise_session es
+        join stay_fit.health_datapoint_latest_view hd 
             on hd.data_point_uid = es.data_point_uid
         order by es.start_time desc
     """

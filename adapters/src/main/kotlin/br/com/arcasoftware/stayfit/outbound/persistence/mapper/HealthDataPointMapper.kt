@@ -69,6 +69,7 @@ object HealthDataPointMapper {
 
     fun HealthDataPoint.toEntity(): HealthDataPointEntity =
         HealthDataPointEntity(
+            userId = this.userId,
             clientDataId = this.clientDataId,
             healthDataType = this.healthDataType,
             clientVersion = this.clientVersion,
@@ -96,6 +97,7 @@ object HealthDataPointMapper {
     fun HealthDataPointEntity.toDomain(): HealthDataPoint =
         HealthDataPoint(
             id = this.id!!,
+            userId = this.userId,
             healthDataType = this.healthDataType,
             clientDataId = this.clientDataId,
             clientVersion = this.clientVersion,
@@ -107,20 +109,4 @@ object HealthDataPointMapper {
             dataPointUid = this.dataPointUid,
             sessions = emptyList()
         )
-
-    fun HearRateSeriesHealthDataPointEntity.toDomain(): HealthDataPoint =
-        HealthDataPoint(
-            id = this.id!!,
-            healthDataType = this.healthDataType,
-            clientDataId = this.clientDataId,
-            clientVersion = this.clientVersion,
-            dataSourceEntity = this.dataSourceEntity,
-            endTime = this.endTime,
-            startTime = this.startTime,
-            updateTime = this.updateTime,
-            zoneOffset = this.zoneOffset,
-            dataPointUid = this.dataPointUid,
-            sessions = emptyList()
-        )
-
 }

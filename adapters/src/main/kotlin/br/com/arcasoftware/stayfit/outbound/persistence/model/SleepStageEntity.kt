@@ -11,7 +11,8 @@ import java.util.*
 @Table(name = "sleep_stage", indexes = [Index(name = "ix_sleep_stage_datapoint_uid", columnList = "dataPointUid")])
 data class SleepStageEntity(
     override val dataPointUid: UUID,
+    override val userId: String? = null,
     val startTime: Instant,
     val endTime: Instant,
-    val stage: SleepStageType
-) : BaseEntity(dataPointUid = dataPointUid)
+    val stage: SleepStageType,
+) : BaseEntity(dataPointUid = dataPointUid, userId = userId)

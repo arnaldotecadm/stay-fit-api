@@ -46,5 +46,6 @@ data class ExerciseSessionEntity(
     val startTime: Instant,
     //val swimmingLog: Any?,
     val vo2Max: Float? = null,
-    override val dataPointUid: UUID
-) : BaseEntity(dataPointUid = dataPointUid)
+    override val dataPointUid: UUID,
+    override val userId: String? = null,
+) : BaseEntity(dataPointUid = dataPointUid, userId = userId)

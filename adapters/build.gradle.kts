@@ -19,6 +19,7 @@ dependencies {
     implementation(project(":domain"))
 
     implementation("org.springframework.boot:spring-boot-starter-web:3.5.5")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.5.5")
 
     implementation("javax.validation:validation-api:2.0.1.Final")
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.20")

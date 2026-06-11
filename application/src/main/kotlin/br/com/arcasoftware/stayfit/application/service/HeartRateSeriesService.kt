@@ -18,6 +18,7 @@ class HeartRateSeriesService(
 ) : HeartRateSeriesServicePort {
 
     private val queue = ConcurrentLinkedQueue<HealthDataPoint>()
+    private var printedEmpty = false
 
     override fun enqueue(batch: List<HealthDataPoint>) {
         queue.addAll(batch)
@@ -41,6 +42,11 @@ class HeartRateSeriesService(
     fun printCount() {
         if (this.queue.isNotEmpty()) {
             println("Heart Rate Queue Size : ${queue.size}")
+        } else {
+            if (!this.printedEmpty) {
+                println("Heart Rate Queue Empty")
+                this.printedEmpty = true
+            }
         }
     }
 

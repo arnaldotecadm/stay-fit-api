@@ -11,10 +11,11 @@ import java.util.*
 @Table(name = "heart_rate_series", indexes = [Index(name = "ix_heart_rate_series_datapoint_uid", columnList = "dataPointUid")])
 data class HeartRateSeriesEntity(
     override val dataPointUid: UUID,
+    override val userId: String? = null,
     val startTime: Instant,
     val endTime: Instant,
     val duration: Duration,
     val heartRate: Float,
     val max: Float?,
     val min: Float?
-) : BaseEntity(dataPointUid = dataPointUid)
+) : BaseEntity(dataPointUid = dataPointUid, userId = userId)

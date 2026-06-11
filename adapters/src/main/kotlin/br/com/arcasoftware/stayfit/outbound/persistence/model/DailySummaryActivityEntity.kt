@@ -10,5 +10,6 @@ data class DailySummaryActivityEntity(
     val calories: Float,
     val dataSource :String,
     val duration: Duration,
-    val exerciseType: String
-) : BaseEntity()
+    val exerciseType: String,
+    override val userId: String? = null,
+) : BaseEntity(userId = userId)
