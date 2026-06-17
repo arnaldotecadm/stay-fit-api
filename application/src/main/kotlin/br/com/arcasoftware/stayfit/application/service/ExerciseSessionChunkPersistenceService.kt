@@ -14,7 +14,7 @@ class ExerciseSessionChunkPersistenceService(
     private val exerciseSessionPersistence: ExerciseSessionPersistencePort,
     private val exerciseLogPersistence: ExerciseLogPersistencePort,
     private val exerciseLocationPersistence: ExerciseLocationPersistencePort,
-    private val dataPointService: HealthDataPointServicePort,
+    private val dataPointService: HealthDataPointServicePort
 ) {
     @Transactional
     fun persistChunk(chunk: List<HealthDataPoint>) {

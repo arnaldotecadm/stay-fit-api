@@ -45,7 +45,7 @@ tasks.test {
 }
 
 val openApiGeneratedResources = "openapi-generated"
-val openApiSrcFolder = "${layout.buildDirectory}/$openApiGeneratedResources"
+val openApiSrcFolder = "$buildDir/$openApiGeneratedResources"
 val openApiKotlinSrcFolder = "$openApiSrcFolder/src/main/kotlin"
 openApiGenerate {
     inputSpec.set("$rootDir/adapters/src/main/resources/static/openapi/openapi.yaml")

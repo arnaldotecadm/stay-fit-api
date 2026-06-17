@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 class SleepSessionChunkPersistenceService(
     private val sleepSessionPersistencePort: SleepSessionPersistencePort,
     private val sleepStagePersistencePort: SleepStagePersistencePort,
-    private val dataPointService: HealthDataPointServicePort,
+    private val dataPointService: HealthDataPointServicePort
 ) {
     @Transactional
     fun persistDataPoint(dataPoint: HealthDataPoint) {

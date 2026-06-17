@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 @Service
 class SleepSessionService(
     private val sleepSessionPersistencePort: SleepSessionPersistencePort,
-    private val sleepSessionChunkPersistenceService: SleepSessionChunkPersistenceService,
+    private val sleepSessionChunkPersistenceService: SleepSessionChunkPersistenceService
 ) : SleepSessionServicePort {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
