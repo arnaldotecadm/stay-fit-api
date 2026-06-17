@@ -1,6 +1,7 @@
 package br.com.arcasoftware.stayfit.inbound.rest.controller
 
 import br.com.arcasoftware.stayfit.application.port.inbound.service.DailySummaryServicePort
+import br.com.arcasoftware.stayfit.application.port.outbound.queue.DailySummaryQueuePort
 import br.com.arcasoftware.stayfit.controller.DailySummaryApi
 import br.com.arcasoftware.stayfit.model.DailySummaryDTO
 import br.com.arcasoftware.stayfit.model.DailySummaryResponseDTO
@@ -14,11 +15,11 @@ import java.time.LocalDate
 @CrossOrigin("*")
 class DailySummaryController(
     private val dailySummaryService: DailySummaryServicePort,
+    private val dailySummaryQueuePort: DailySummaryQueuePort,
 ) : DailySummaryApi {
-    override fun postDailySummary(dailySummaryDTO: DailySummaryDTO): ResponseEntity<String> {
-        println("Posting daily summary")
-        this.dailySummaryService.enqueue(dailySummaryDTO.toDomain())
-        return ResponseEntity.ok().build()
+    override fun postDailySummary(dailySummaryDTO: List<DailySummaryDTO>): ResponseEntity<String> {
+        dailySummaryQueuePort.sendBatch(dailySummaryDTO.map { it.toDomain() })
+        return ResponseEntity.accepted().build()
     }
 
     override fun getDailySummary(date: LocalDate): ResponseEntity<DailySummaryResponseDTO> {

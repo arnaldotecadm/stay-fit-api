@@ -15,6 +15,27 @@ spring:
         format_sql: true
         type: trace
         default_schema: stay_fit
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+
+cloud:
+  aws:
+    region:
+      static: ${AWS_REGION:eu-north-1}
+    credentials:
+      access-key: ${AWS_ACCESS_KEY_ID:local}
+      secret-key: ${AWS_SECRET_ACCESS_KEY:local}
+    sqs:
+      endpoint-override: ${AWS_SQS_ENDPOINT_OVERRIDE:}
+      heart-rate-series-queue:
+        url: ${AWS_SQS_HEART_RATE_SERIES_QUEUE_URL:https://sqs.us-east-1.amazonaws.com/000000000000/HeartRateSeriesQueue}
+      sleep-session-queue:
+        url: ${AWS_SQS_SLEEP_SESSION_QUEUE_URL:https://sqs.us-east-1.amazonaws.com/000000000000/SleepSessionQueue}
+      exercise-session-queue:
+        url: ${AWS_SQS_EXERCISE_SESSION_QUEUE_URL:https://sqs.us-east-1.amazonaws.com/000000000000/ExerciseSessionQueue}
+      daily-summary-queue:
+        url: ${AWS_SQS_DAILY_SUMMARY_QUEUE_URL:https://sqs.us-east-1.amazonaws.com/000000000000/DailySummaryQueue}
 
 logging:
   level:

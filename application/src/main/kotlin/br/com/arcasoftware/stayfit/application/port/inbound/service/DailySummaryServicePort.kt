@@ -5,6 +5,6 @@ import br.com.arcasoftware.stayfit.domain.DailySummary
 import java.time.LocalDate
 
 interface DailySummaryServicePort {
-    fun enqueue(dailySummary: DailySummary)
+    fun enqueue(dailySummary: List<DailySummary>)
     fun getDailySummaryEntityByDate(dateTime: LocalDate): DailyActivitySummary?
 }

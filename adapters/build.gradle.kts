@@ -32,6 +32,9 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.2")
     compileOnly(libs.servletApi)
 
+    implementation(platform("software.amazon.awssdk:bom:2.31.56"))
+    implementation("software.amazon.awssdk:sqs")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -42,7 +45,7 @@ tasks.test {
 }
 
 val openApiGeneratedResources = "openapi-generated"
-val openApiSrcFolder = "$buildDir/$openApiGeneratedResources"
+val openApiSrcFolder = "${layout.buildDirectory}/$openApiGeneratedResources"
 val openApiKotlinSrcFolder = "$openApiSrcFolder/src/main/kotlin"
 openApiGenerate {
     inputSpec.set("$rootDir/adapters/src/main/resources/static/openapi/openapi.yaml")

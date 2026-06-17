@@ -5,7 +5,7 @@ import br.com.arcasoftware.stayfit.domain.ExerciseSummary
 import br.com.arcasoftware.stayfit.domain.HealthDataPoint
 
 interface ExerciseSessionServicePort {
-    fun enqueue(healthDataPoint: HealthDataPoint)
+    fun enqueue(healthDataPoint: List<HealthDataPoint>)
     fun getBasicExerciseSessionList(): List<BasicExerciseSession>
     fun getExerciseSessionSummary(): List<ExerciseSummary>
 }

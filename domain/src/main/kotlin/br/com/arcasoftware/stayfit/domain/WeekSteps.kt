@@ -1,8 +1,8 @@
 package br.com.arcasoftware.stayfit.domain
 
-import java.time.LocalDate
+import java.time.Instant
 
 data class WeekSteps(
-    val date: LocalDate,
+    val date: Instant,
     val steps: Long
 )

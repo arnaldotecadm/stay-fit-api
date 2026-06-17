@@ -8,13 +8,14 @@ import br.com.arcasoftware.stayfit.outbound.persistence.mapper.DailySummaryMappe
 import br.com.arcasoftware.stayfit.outbound.persistence.repository.DailySummaryRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.ZoneId
 
 @Service
 class DailySummaryPersistenceAdapter(
     private val dailySummaryRepository: DailySummaryRepository,
 ) : DailySummaryPersistencePort {
     override fun persist(dailySummary: DailySummary): DailySummary {
-        dailySummaryRepository.findByDate(dailySummary.date)?.let {
+        dailySummaryRepository.findByDate(dailySummary.date.atZone(ZoneId.systemDefault()).toLocalDate())?.let {
             dailySummaryRepository.deleteById(it.id!!)
         }
 

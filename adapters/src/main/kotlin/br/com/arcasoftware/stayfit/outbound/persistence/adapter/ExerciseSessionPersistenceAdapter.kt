@@ -8,19 +8,27 @@ import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseSessionMa
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseSessionMapper.toEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.repository.ExerciseSessionRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ExerciseSessionPersistenceAdapter(
     private val exerciseSessionRepository: ExerciseSessionRepository,
 ) : ExerciseSessionPersistencePort {
-    override fun persist(exerciseSession: ExerciseSession): ExerciseSession =
-        if (this.exerciseSessionRepository.findByDataPointUid(exerciseSession.dataPointUid) == null) {
-            this.exerciseSessionRepository
-                .save(exerciseSession.toEntity())
-                .toDomain()
-        } else {
-            exerciseSession
+    override fun persist(exerciseSession: ExerciseSession): ExerciseSession {
+        persistBatch(listOf(exerciseSession))
+        return exerciseSession
+    }
+
+    @Transactional
+    override fun persistBatch(exerciseSessionBatch: List<ExerciseSession>) {
+        if (exerciseSessionBatch.isEmpty()) {
+            return
         }
+
+        val dataPointUids = exerciseSessionBatch.asSequence().map { it.dataPointUid }.distinct().toList()
+        this.exerciseSessionRepository.deleteByDataPointUidIn(dataPointUids)
+        this.exerciseSessionRepository.saveAll(exerciseSessionBatch.map { it.toEntity() })
+    }
 
     override fun getBasicExerciseSessionList(): List<BasicExerciseSession> =
         this.exerciseSessionRepository

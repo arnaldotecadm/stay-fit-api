@@ -1,6 +1,7 @@
 package br.com.arcasoftware.stayfit.inbound.rest.controller
 
 import br.com.arcasoftware.stayfit.application.port.inbound.service.SleepSessionServicePort
+import br.com.arcasoftware.stayfit.application.port.outbound.queue.SleepSessionQueuePort
 import br.com.arcasoftware.stayfit.controller.SleepsApi
 import br.com.arcasoftware.stayfit.model.DailySleepDTO
 import br.com.arcasoftware.stayfit.model.HealthSleepDataPointDTO
@@ -15,11 +16,11 @@ import java.time.LocalDate
 @CrossOrigin("*")
 class SleepSessionController(
     private val sleepSessionServicePort: SleepSessionServicePort,
+    private val sleepSessionQueuePort: SleepSessionQueuePort,
 ) : SleepsApi {
-    override fun postSleepSession(healthSleepDataPointDTO: HealthSleepDataPointDTO): ResponseEntity<String> {
-        println("Posting sleep session")
-        this.sleepSessionServicePort.enqueue(healthSleepDataPointDTO.toDomain())
-        return ResponseEntity.ok().build()
+    override fun postSleepSession(healthSleepDataPointDTO: List<HealthSleepDataPointDTO>): ResponseEntity<String> {
+        sleepSessionQueuePort.sendBatch(healthSleepDataPointDTO.map { it.toDomain() })
+        return ResponseEntity.accepted().build()
     }
 
     override fun getSleepStage(localDate: LocalDate): ResponseEntity<DailySleepDTO> =

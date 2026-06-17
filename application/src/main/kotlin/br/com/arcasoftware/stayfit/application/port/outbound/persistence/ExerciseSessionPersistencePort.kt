@@ -6,6 +6,7 @@ import br.com.arcasoftware.stayfit.domain.ExerciseSummary
 
 interface ExerciseSessionPersistencePort {
     fun persist(exerciseSession: ExerciseSession): ExerciseSession
+    fun persistBatch(exerciseSessionBatch: List<ExerciseSession>)
     fun getBasicExerciseSessionList(): List<BasicExerciseSession>
     fun getExerciseSessionSummary(): List<ExerciseSummary>
 }

@@ -70,7 +70,7 @@ object SleepSessionMapper {
             stages =
                 this.stages?.map { stage ->
                     DailySleepStageDTO(
-                        stage = stage.stage.name,
+                        stage = stage.stage?.name,
                         durationInMinutes = stage.durationInMinutes,
                     )
                 },

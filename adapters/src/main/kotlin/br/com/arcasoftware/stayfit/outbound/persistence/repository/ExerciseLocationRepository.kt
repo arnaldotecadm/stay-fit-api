@@ -7,7 +7,6 @@ import java.util.*
 
 @Repository
 interface ExerciseLocationRepository : JpaRepository<ExerciseLocationEntity, Long> {
-    fun findByDataPointUid(dataPointUid: UUID): ExerciseLocationEntity?
-
     fun deleteByDataPointUid(dataPointUid: UUID)
+    fun deleteByDataPointUidIn(dataPointUids: Collection<UUID>)
 }

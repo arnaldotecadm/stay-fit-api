@@ -1,10 +1,13 @@
 package br.com.arcasoftware.stayfit.outbound.persistence.mapper
 
 import br.com.arcasoftware.stayfit.domain.HealthDataPoint
+import br.com.arcasoftware.stayfit.domain.HeartDailySession
 import br.com.arcasoftware.stayfit.domain.HeartRateSeries
+import br.com.arcasoftware.stayfit.model.HeartDailySessionDTO
 import br.com.arcasoftware.stayfit.model.HeartRateSeriesDTO
 import br.com.arcasoftware.stayfit.outbound.persistence.model.HearRateSeriesHealthDataPointEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.model.HeartRateSeriesEntity
+import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.HeartDailySessionProjection
 import java.util.UUID
 
 object HeartRateSeriesMapper {
@@ -57,5 +60,21 @@ object HeartRateSeriesMapper {
             zoneOffset = this.zoneOffset,
             dataPointUid = this.dataPointUid,
             sessions = emptyList(),
+        )
+
+    fun HeartDailySessionProjection.toDomain(): HeartDailySession =
+        HeartDailySession(
+            minuteBucket = this.minuteBucket,
+            avgHr = this.avgHr,
+            minHr = this.minHr,
+            maxHr = this.maxHr,
+        )
+
+    fun HeartDailySession.toDTO() : HeartDailySessionDTO =
+        HeartDailySessionDTO(
+            date = this.minuteBucket,
+            averageHeartRate = this.avgHr,
+            minHeartRate = this.minHr,
+            maxHeartRate = this.maxHr,
         )
 }

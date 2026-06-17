@@ -11,6 +11,6 @@ data class DailySleep(
 )
 
 data class DailySleepStage(
-    val stage: SleepStageType,
-    val durationInMinutes: Float
+    val stage: SleepStageType? = null,
+    val durationInMinutes: Float? = null
 )

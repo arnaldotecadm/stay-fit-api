@@ -6,6 +6,7 @@ import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseLocationM
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.ExerciseLocationMapper.toEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.repository.ExerciseLocationRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
@@ -17,7 +18,21 @@ class ExerciseLocationPersistenceAdapter(
             .save(exerciseLocation.toEntity())
             .toDomain()
 
+    @Transactional
     override fun deleteByDataPointUid(dataPointUid: UUID) {
         this.exerciseLocationRepository.deleteByDataPointUid(dataPointUid)
+    }
+
+    @Transactional
+    override fun deleteByDataPointUidIn(dataPointUids: Collection<UUID>) {
+        this.exerciseLocationRepository.deleteByDataPointUidIn(dataPointUids)
+    }
+
+    @Transactional
+    override fun persistBatch(exerciseLocations: List<ExerciseLocation>) {
+        if (exerciseLocations.isEmpty()) {
+            return
+        }
+        this.exerciseLocationRepository.saveAll(exerciseLocations.map { it.toEntity() })
     }
 }

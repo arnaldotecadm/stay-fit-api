@@ -7,7 +7,6 @@ import java.util.UUID
 
 @Repository
 interface ExerciseLogRepository : JpaRepository<ExerciseLogEntity, Long> {
-    fun findByDataPointUid(dataPointUid: UUID): ExerciseLogEntity?
-
     fun deleteByDataPointUid(dataPointUid: UUID)
+    fun deleteByDataPointUidIn(dataPointUids: Collection<UUID>)
 }

@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.klinter)
     alias(libs.plugins.springbootPlugin)
     alias(libs.plugins.springbootManagement)
-//    id("org.flywaydb.flyway") version "9.19.4"
+    id("org.flywaydb.flyway") version "9.19.4"
 }
 
 repositories {
@@ -19,16 +19,8 @@ dependencies {
     implementation(project(":adapters"))
     implementation(libs.springStarterWeb)
     implementation(libs.postgres)
-//    implementation("org.flywaydb:flyway-core:9.19.4")
+    implementation("org.flywaydb:flyway-core:9.19.4")
 }
-/*
-flyway {
-    url = "jdbc:postgresql://${postgresHost}:${postgresPort}/${postgresDatabase}"
-    user = postgresUsername
-    password = postgresPassword
-    locations = arrayOf("filesystem:./db/migration")
-}
-*/
 tasks.test {
     useJUnitPlatform()
 }

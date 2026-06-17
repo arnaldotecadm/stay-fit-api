@@ -1,6 +1,7 @@
 package br.com.arcasoftware.stayfit.inbound.rest.controller
 
 import br.com.arcasoftware.stayfit.application.port.inbound.service.ExerciseSessionServicePort
+import br.com.arcasoftware.stayfit.application.port.outbound.queue.ExerciseSessionQueuePort
 import br.com.arcasoftware.stayfit.controller.ExercisesApi
 import br.com.arcasoftware.stayfit.model.ExerciseSummaryDTO
 import br.com.arcasoftware.stayfit.model.HealthExerciseDataPointDTO
@@ -14,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController
 @CrossOrigin("*")
 class ExerciseSessionController(
     private val exerciseSessionService: ExerciseSessionServicePort,
+    private val exerciseSessionQueuePort: ExerciseSessionQueuePort,
 ) : ExercisesApi {
-    override fun postExerciseSession(healthExerciseDataPointDTO: HealthExerciseDataPointDTO): ResponseEntity<String> {
-        println("Posting exercise")
-        this.exerciseSessionService.enqueue(healthExerciseDataPointDTO.toDomain())
-        return ResponseEntity.ok().build()
+    override fun postExerciseSession(healthExerciseDataPointDTO: List<HealthExerciseDataPointDTO>): ResponseEntity<String> {
+        exerciseSessionQueuePort.sendBatch(healthExerciseDataPointDTO.map { it.toDomain() })
+        return ResponseEntity.accepted().build()
     }
 
     override fun getExerciseSummary(): ResponseEntity<List<ExerciseSummaryDTO>> {

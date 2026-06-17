@@ -1,9 +1,9 @@
 package br.com.arcasoftware.stayfit.outbound.persistence.model.projection
 
-import java.time.LocalDate
+import java.time.Instant
 
 interface DailyActivitySummaryProjection {
-    val date: LocalDate
+    val date: Instant
     val sleepScore: Long
     val totalSteps: Long
     val activeTimeInMinutes: Long

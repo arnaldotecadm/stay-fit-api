@@ -1,9 +1,9 @@
 package br.com.arcasoftware.stayfit.domain
 
-import java.time.LocalDate
+import java.time.Instant
 
 data class DailyActivitySummary(
-    val date: LocalDate,
+    val date: Instant,
     val totalSteps: Long,
     val sleepScore: Long,
     val activeTimeInMinutes: Long,

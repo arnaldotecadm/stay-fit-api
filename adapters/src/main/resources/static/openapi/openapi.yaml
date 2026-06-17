@@ -29,10 +29,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/HealthExerciseDataPointDTO"
+              $ref: "#/components/schemas/HealthExerciseDataPointListDTO"
       responses:
-        200:
-          description: Get analysis result
+        202:
+          description: Exercise datapoint accepted for asynchronous processing
           content:
             application/json:
               schema:
@@ -79,7 +79,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/HealthSleepDataPointDTO"
+              $ref: "#/components/schemas/HealthSleepDataPointListDTO"
       responses:
         200:
           description: Get analysis result
@@ -138,10 +138,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DailySummaryDTO"
+              $ref: "#/components/schemas/DailySummaryListDTO"
       responses:
-        200:
-          description: Post Daily Summary
+        202:
+          description: Heart rate batch accepted for asynchronous processing
           content:
             application/json:
               schema:
@@ -199,12 +199,44 @@ paths:
             schema:
               $ref: "#/components/schemas/HealthHeartRateSeriesDataPointListDTO"
       responses:
-        200:
-          description: Post Daily Summary
+        202:
+          description: Heart rate batch accepted for asynchronous processing
           content:
             application/json:
               schema:
                 type: string
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /heart-rate/{date}:
+    get:
+      tags:
+        - Sessions
+      summary: Under construction
+      operationId: getHearRateSeries
+      parameters:
+        - name: date
+          in: path
+          description: The date for which to retrieve the daily summary, specified as a string in the format "YYYY-MM-DD".
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        202:
+          description: Heart rate batch accepted for asynchronous processing
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HeartDailySessionDTO"
         400:
           $ref: "#/components/responses/BadRequest"
         401:
@@ -304,6 +336,11 @@ components:
         - startTime
         - uid
 
+    HealthExerciseDataPointListDTO:
+        type: array
+        items:
+            $ref: "#/components/schemas/HealthExerciseDataPointDTO"
+
     HealthExerciseDataPointDTO:
       allOf:
         - $ref: "#/components/schemas/BaseHealthDataPointDTO"
@@ -316,6 +353,11 @@ components:
       required:
         - startTime
         - uid
+
+    HealthSleepDataPointListDTO:
+        type: array
+        items:
+            $ref: "#/components/schemas/HealthSleepDataPointDTO"
 
     HealthSleepDataPointDTO:
       allOf:
@@ -620,7 +662,7 @@ components:
           type: long
         date:
           type: string
-          format: date
+          format: instant
         sleepScore:
           type: long
         activityCount:
@@ -641,7 +683,7 @@ components:
       properties:
         date:
           type: string
-          format: date
+          format: instant
         steps:
           type: long
 
@@ -655,6 +697,9 @@ components:
         duration:
           type: string
           format: duration
+        localdate:
+          type: string
+          format: instant
 
     DailySleepDTO:
       type: object
@@ -682,6 +727,11 @@ components:
           type: number
           format: float
 
+    DailySummaryListDTO:
+        type: array
+        items:
+            $ref: "#/components/schemas/DailySummaryDTO"
+
     DailySummaryDTO:
       type: object
       properties:
@@ -699,11 +749,9 @@ components:
           type: long
         date:
           type: string
-          format: date
+          format: instant
         sleepScore:
           type: long
-        exerciseList:
-          $ref: "#/components/schemas/DailySummaryActivityListDTO"
       required:
         - userId
         - totalSteps
@@ -714,33 +762,6 @@ components:
         - date
         - sleepScore
         - exerciseList
-
-    DailySummaryActivityListDTO:
-      type: array
-      items:
-        $ref: "#/components/schemas/DailySummaryActivityDTO"
-
-    DailySummaryActivityDTO:
-      type: object
-      properties:
-        calories:
-          type: number
-          format: float
-          description: The calories burned during this exercise session, in kilocalories.
-        dataSource:
-          type: string
-        duration:
-          type: string
-          format: duration
-          description: The duration of this exercise session, specified as Duration, in milliseconds.
-        exerciseType:
-          type: string
-          description: The exercise type of this exercise session. It indicates the Samsung Health app's predefined exercise type.
-      required:
-        - calories
-        - dataSource
-        - duration
-        - exerciseType
 
     HeartRateSeriesDTO:
       type: object
@@ -774,6 +795,26 @@ components:
         - endTime
         - duration
         - heartRate
+
+    HeartDailySessionDTO:
+      type: object
+      properties:
+        date:
+          type: string
+          format: instant
+          description: The date of the heart rate session, specified as a string in the format "YYYY-MM-DD".
+        averageHeartRate:
+          type: number
+          format: float
+          description: The average heart rate value for the day, in beats per minute.
+        maxHeartRate:
+          type: number
+          format: float
+          description: The highest heart rate value for the day, in beats per minute.
+        minHeartRate:
+          type: number
+          format: float
+          description: The lowest heart rate value for the day, in beats per minute.
 
     ExerciseSummaryListDTO:
       type: array

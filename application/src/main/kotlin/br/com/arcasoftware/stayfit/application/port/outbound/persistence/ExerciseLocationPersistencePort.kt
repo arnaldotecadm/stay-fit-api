@@ -6,4 +6,6 @@ import java.util.UUID
 interface ExerciseLocationPersistencePort {
     fun persist(exerciseLocation: ExerciseLocation): ExerciseLocation
     fun deleteByDataPointUid(dataPointUid: UUID)
+    fun deleteByDataPointUidIn(dataPointUids: Collection<UUID>)
+    fun persistBatch(exerciseLocations: List<ExerciseLocation>)
 }

@@ -6,6 +6,7 @@ import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepStageMapper.
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepStageMapper.toEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.repository.SleepStageRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
@@ -17,6 +18,7 @@ class SleepStagePersistenceAdapter(
             .save(sleepStage.toEntity())
             .toDomain()
 
+    @Transactional
     override fun deleteByDataPointUid(dataPointUid: UUID) {
         this.sleepStageRepository.deleteByDataPointUid(dataPointUid)
     }

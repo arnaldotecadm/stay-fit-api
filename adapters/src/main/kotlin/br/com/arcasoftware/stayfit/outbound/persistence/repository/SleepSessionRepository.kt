@@ -24,8 +24,8 @@ interface SleepSessionRepository : JpaRepository<SleepSessionEntity, Long> {
                 from stay_fit.sleep_session ss 
             )
             select
-                stage.stage,
-                SUM(EXTRACT(EPOCH FROM (stage.end_time - stage.start_time))) / 60 AS duration_minutes,
+                coalesce(stage.stage, 0) as stage,
+                coalesce(SUM(EXTRACT(EPOCH FROM (stage.end_time - stage.start_time))) / 60, 0) AS duration_minutes,
                 s.start_time,
                 s.end_time,
                 s.duration

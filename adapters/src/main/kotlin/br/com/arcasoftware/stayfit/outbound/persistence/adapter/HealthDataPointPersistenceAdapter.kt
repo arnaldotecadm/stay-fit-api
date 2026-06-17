@@ -9,6 +9,8 @@ import br.com.arcasoftware.stayfit.outbound.persistence.mapper.HeartRateSeriesMa
 import br.com.arcasoftware.stayfit.outbound.persistence.repository.HealthDataPointHeartRateRepository
 import br.com.arcasoftware.stayfit.outbound.persistence.repository.HealthDataPointRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Service
 class HealthDataPointPersistenceAdapter(
@@ -32,4 +34,32 @@ class HealthDataPointPersistenceAdapter(
         } else {
             healthDataPoint
         }
+
+    @Transactional
+    override fun persistBatch(healthDataPoints: List<HealthDataPoint>) {
+        if (healthDataPoints.isEmpty()) {
+            return
+        }
+
+        val deduplicatedByDataPointUid = LinkedHashMap<UUID, HealthDataPoint>(healthDataPoints.size)
+        healthDataPoints.forEach { deduplicatedByDataPointUid[it.dataPointUid] = it }
+        val uniqueDataPoints = deduplicatedByDataPointUid.values.toList()
+
+        this.healthDataPointRepository.deleteByDataPointUidIn(deduplicatedByDataPointUid.keys)
+        this.healthDataPointRepository.saveAll(uniqueDataPoints.map { it.toEntity() })
+    }
+
+    @Transactional
+    override fun persistHeartRateBatch(healthDataPoints: List<HealthDataPoint>) {
+        if (healthDataPoints.isEmpty()) {
+            return
+        }
+
+        val deduplicatedByDataPointUid = LinkedHashMap<UUID, HealthDataPoint>(healthDataPoints.size)
+        healthDataPoints.forEach { deduplicatedByDataPointUid[it.dataPointUid] = it }
+
+        val uniqueDataPoints = deduplicatedByDataPointUid.values.toList()
+        this.healthDataPointHeartRateRepository.deleteByDataPointUidIn(deduplicatedByDataPointUid.keys)
+        this.healthDataPointHeartRateRepository.saveAll(uniqueDataPoints.map { it.toEntityHeartRate() })
+    }
 }

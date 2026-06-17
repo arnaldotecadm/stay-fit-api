@@ -8,4 +8,5 @@ import java.util.*
 @Repository
 interface HealthDataPointRepository : JpaRepository<HealthDataPointEntity, Long> {
     fun findByDataPointUid(dataPointUid: UUID): HealthDataPointEntity?
+    fun deleteByDataPointUidIn(dataPointUids: Collection<UUID>)
 }

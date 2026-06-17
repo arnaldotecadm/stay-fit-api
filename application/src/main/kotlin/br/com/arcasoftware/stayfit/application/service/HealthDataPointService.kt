@@ -12,7 +12,15 @@ class HealthDataPointService(private val healthDataPointPersistence: HealthDataP
         return this.healthDataPointPersistence.persist(healthDataPoint)
     }
 
+    override fun persistBatch(healthDataPoints: List<HealthDataPoint>) {
+        this.healthDataPointPersistence.persistBatch(healthDataPoints)
+    }
+
     override fun persistHeartRate(healthDataPoint: HealthDataPoint): HealthDataPoint {
         return this.healthDataPointPersistence.persistHeartRate(healthDataPoint)
+    }
+
+    override fun persistHeartRateBatch(healthDataPoints: List<HealthDataPoint>) {
+        this.healthDataPointPersistence.persistHeartRateBatch(healthDataPoints)
     }
 }

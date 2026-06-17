@@ -1,0 +1,35 @@
+package br.com.arcasoftware.stayfit.configs
+
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
+import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.sqs.SqsClient
+import java.net.URI
+
+@Configuration
+class SqsConfig(
+    @Value("\${cloud.aws.region.static}") private val region: String,
+    @Value("\${cloud.aws.credentials.access-key}") private val accessKey: String,
+    @Value("\${cloud.aws.credentials.secret-key}") private val secretKey: String,
+    @Value("\${cloud.aws.sqs.endpoint-override}") private val endpointOverride: String,
+) {
+    @Bean
+    fun sqsClient(): SqsClient {
+        val builder = SqsClient.builder()
+            .region(Region.of(region))
+            .credentialsProvider(
+                StaticCredentialsProvider.create(
+                    AwsBasicCredentials.create(accessKey, secretKey),
+                ),
+            )
+
+        if (endpointOverride.isNotBlank()) {
+            builder.endpointOverride(URI.create(endpointOverride))
+        }
+
+        return builder.build()
+    }
+}

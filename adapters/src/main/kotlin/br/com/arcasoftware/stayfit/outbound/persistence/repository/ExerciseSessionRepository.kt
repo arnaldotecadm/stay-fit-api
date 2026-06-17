@@ -33,6 +33,7 @@ interface ExerciseSessionRepository : JpaRepository<ExerciseSessionEntity, Long>
     fun getBasicExerciseSessionList(): List<BasicExerciseSessionProjection>
 
     fun findByDataPointUid(dataPointUid: UUID): ExerciseSessionEntity?
+    fun deleteByDataPointUidIn(dataPointUids: Collection<UUID>)
 
     @Query(
         nativeQuery = true,
