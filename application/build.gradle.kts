@@ -15,6 +15,7 @@ dependencies {
     implementation(libs.springStarterDataJpa)
     implementation(libs.servletApi)
     implementation(libs.nimbusJoseJWT)
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.2")
 }
 
 tasks.test {

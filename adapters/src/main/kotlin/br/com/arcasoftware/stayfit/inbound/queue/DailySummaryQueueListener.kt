@@ -5,12 +5,19 @@ import br.com.arcasoftware.stayfit.domain.DailySummary
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.awspring.cloud.sqs.annotation.SqsListener
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Conditional
 import org.springframework.messaging.Message
 import org.springframework.stereotype.Service
 
 private val logger = LoggerFactory.getLogger(DailySummaryQueueListener::class.java)
 
 @Service
+@ConditionalOnProperty(
+    value = ["cloud.aws.sqs.enabled"],
+    havingValue = "true",
+    matchIfMissing = false
+)
 class DailySummaryQueueListener(
     private val dailySummaryPersistencePort: DailySummaryPersistencePort,
     private val objectMapper: ObjectMapper,
@@ -19,6 +26,6 @@ class DailySummaryQueueListener(
     fun onMessages(messages: List<Message<String>>) {
         val summaries = messages.map { SqsMessageDecoder.decode(it.payload, objectMapper, DailySummary::class.java) }
         dailySummaryPersistencePort.persistBatch(summaries)
-        logger.debug("Persisted batch of {} daily summaries", summaries.size)
+        logger.info("Persisted batch of {} daily summaries", summaries.size)
     }
 }

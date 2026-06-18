@@ -8,19 +8,9 @@ import org.springframework.stereotype.Service
 @Service
 class HealthDataPointService(private val healthDataPointPersistence: HealthDataPointPersistencePort) :
     HealthDataPointServicePort {
-    override fun persist(healthDataPoint: HealthDataPoint): HealthDataPoint {
-        return this.healthDataPointPersistence.persist(healthDataPoint)
-    }
+    override fun persist(healthDataPoint: HealthDataPoint): HealthDataPoint =
+        healthDataPointPersistence.persist(healthDataPoint)
 
-    override fun persistBatch(healthDataPoints: List<HealthDataPoint>) {
-        this.healthDataPointPersistence.persistBatch(healthDataPoints)
-    }
-
-    override fun persistHeartRate(healthDataPoint: HealthDataPoint): HealthDataPoint {
-        return this.healthDataPointPersistence.persistHeartRate(healthDataPoint)
-    }
-
-    override fun persistHeartRateBatch(healthDataPoints: List<HealthDataPoint>) {
-        this.healthDataPointPersistence.persistHeartRateBatch(healthDataPoints)
-    }
+    override fun persistBatch(healthDataPoints: List<HealthDataPoint>) =
+        healthDataPointPersistence.persistBatch(healthDataPoints)
 }

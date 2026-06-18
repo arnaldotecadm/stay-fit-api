@@ -32,9 +32,10 @@ cloud:
       access-key: ${AWS_ACCESS_KEY_ID:local}
       secret-key: ${AWS_SECRET_ACCESS_KEY:local}
     sqs:
+      enabled: false
       endpoint-override: ${AWS_SQS_ENDPOINT_OVERRIDE:}
-      max-concurrent-messages: ${SQS_MAX_CONCURRENT_MESSAGES:10}
-      max-messages-per-poll: ${SQS_MAX_MESSAGES_PER_POLL:10}
+      max-concurrent-messages: ${SQS_MAX_CONCURRENT_MESSAGES:250}
+      max-messages-per-poll: ${SQS_MAX_MESSAGES_PER_POLL:25}
       heart-rate-series-queue:
         url: ${AWS_SQS_HEART_RATE_SERIES_QUEUE_URL:https://sqs.eu-north-1.amazonaws.com/000000000000/HeartRateSeriesQueue}
       sleep-session-queue:

@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.springStarterWeb)
     implementation(libs.postgres)
     implementation("org.flywaydb:flyway-core:9.19.4")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 }
 tasks.test {
     useJUnitPlatform()
