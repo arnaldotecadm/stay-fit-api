@@ -5,6 +5,7 @@ import java.time.Instant
 import java.util.UUID
 
 data class ExerciseSession(
+    override val type: HealthDataPointType = HealthDataPointType.EXERCISE,
     override val dataPointUid: UUID,
     override val startTime: Instant,
     override val endTime: Instant,

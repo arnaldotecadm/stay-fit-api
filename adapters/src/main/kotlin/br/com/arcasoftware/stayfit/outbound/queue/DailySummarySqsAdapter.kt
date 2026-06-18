@@ -5,14 +5,14 @@ import br.com.arcasoftware.stayfit.domain.DailySummary
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import software.amazon.awssdk.services.sqs.SqsClient
+import software.amazon.awssdk.services.sqs.SqsAsyncClient
 
 @Service
 class DailySummarySqsAdapter(
-    sqsClient: SqsClient,
+    sqsAsyncClient: SqsAsyncClient,
     objectMapper: ObjectMapper,
     @Value("\${cloud.aws.sqs.daily-summary-queue.url}") queueUrl: String,
-) : AbstractSqsAdapter(sqsClient, objectMapper, queueUrl), DailySummaryQueuePort {
+) : AbstractSqsAdapter(sqsAsyncClient, objectMapper, queueUrl), DailySummaryQueuePort {
 
     override fun sendBatch(dailySummaries: List<DailySummary>) = doSendBatch(dailySummaries)
 }

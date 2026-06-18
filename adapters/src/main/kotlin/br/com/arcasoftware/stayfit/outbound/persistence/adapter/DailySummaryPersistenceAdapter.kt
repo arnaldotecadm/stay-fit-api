@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.ZoneId
 
+import org.springframework.transaction.annotation.Transactional
+
 @Service
 class DailySummaryPersistenceAdapter(
     private val dailySummaryRepository: DailySummaryRepository,
@@ -26,4 +28,9 @@ class DailySummaryPersistenceAdapter(
 
     override fun getDailySummaryEntityByDate(localDate: LocalDate): DailyActivitySummary? =
         this.dailySummaryRepository.getDailySummaryEntityByDate(localDate)?.toDomain()
+
+    @Transactional
+    override fun persistBatch(dailySummaries: List<DailySummary>) {
+        dailySummaries.forEach { persist(it) }
+    }
 }

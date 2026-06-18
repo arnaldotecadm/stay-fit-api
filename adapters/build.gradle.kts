@@ -35,6 +35,9 @@ dependencies {
     implementation(platform("software.amazon.awssdk:bom:2.31.56"))
     implementation("software.amazon.awssdk:sqs")
 
+    implementation(platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.3.0"))
+    implementation("io.awspring.cloud:spring-cloud-aws-starter-sqs")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

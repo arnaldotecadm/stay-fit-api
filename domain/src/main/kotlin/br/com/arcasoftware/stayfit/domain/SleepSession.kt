@@ -5,6 +5,7 @@ import java.time.Instant
 import java.util.*
 
 data class SleepSession(
+    override val type: HealthDataPointType = HealthDataPointType.SLEEP,
     override val dataPointUid: UUID,
     override val startTime: Instant,
     override val endTime: Instant,

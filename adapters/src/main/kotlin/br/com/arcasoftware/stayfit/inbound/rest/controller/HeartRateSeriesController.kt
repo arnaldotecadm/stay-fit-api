@@ -7,6 +7,7 @@ import br.com.arcasoftware.stayfit.model.HealthHeartRateSeriesDataPointDTO
 import br.com.arcasoftware.stayfit.model.HeartDailySessionDTO
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.HealthDataPointMapper.toDomain
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.HeartRateSeriesMapper.toDTO
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.RestController
@@ -18,7 +19,9 @@ class HeartRateSeriesController(
     private val heartRateSeriesServicePort: HeartRateSeriesServicePort,
     private val heartRateSeriesQueuePort: HeartRateSeriesQueuePort,
 ) : HeartRateApi {
+    private val logger = LoggerFactory.getLogger(this::class.java)
     override fun postHearRateSeries(healthHeartRateSeriesDataPointDTO: List<HealthHeartRateSeriesDataPointDTO>): ResponseEntity<String> {
+        logger.info("Received heart rate series data points: ${healthHeartRateSeriesDataPointDTO.size}")
         heartRateSeriesQueuePort.sendBatch(healthHeartRateSeriesDataPointDTO.map { it.toDomain() })
         return ResponseEntity.accepted().build()
     }

@@ -5,14 +5,14 @@ import br.com.arcasoftware.stayfit.domain.HealthDataPoint
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import software.amazon.awssdk.services.sqs.SqsClient
+import software.amazon.awssdk.services.sqs.SqsAsyncClient
 
 @Service
 class ExerciseSessionSqsAdapter(
-    sqsClient: SqsClient,
+    sqsAsyncClient: SqsAsyncClient,
     objectMapper: ObjectMapper,
     @Value("\${cloud.aws.sqs.exercise-session-queue.url}") queueUrl: String,
-) : AbstractSqsAdapter(sqsClient, objectMapper, queueUrl), ExerciseSessionQueuePort {
+) : AbstractSqsAdapter(sqsAsyncClient, objectMapper, queueUrl), ExerciseSessionQueuePort {
 
     override fun sendBatch(healthDataPoints: List<HealthDataPoint>) = doSendBatch(healthDataPoints)
 }

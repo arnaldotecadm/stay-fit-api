@@ -20,6 +20,17 @@ class SleepStagePersistenceAdapter(
 
     @Transactional
     override fun deleteByDataPointUid(dataPointUid: UUID) {
-        this.sleepStageRepository.deleteByDataPointUid(dataPointUid)
+        sleepStageRepository.deleteByDataPointUid(dataPointUid)
+    }
+
+    @Transactional
+    override fun deleteByDataPointUidIn(dataPointUids: Collection<UUID>) {
+        if (dataPointUids.isNotEmpty()) sleepStageRepository.deleteByDataPointUidIn(dataPointUids)
+    }
+
+    @Transactional
+    override fun persistBatch(stages: List<SleepStage>) {
+        if (stages.isEmpty()) return
+        sleepStageRepository.saveAll(stages.map { it.toEntity() })
     }
 }

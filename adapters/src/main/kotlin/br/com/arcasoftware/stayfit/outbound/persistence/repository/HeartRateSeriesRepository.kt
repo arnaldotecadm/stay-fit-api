@@ -3,14 +3,18 @@ package br.com.arcasoftware.stayfit.outbound.persistence.repository
 import br.com.arcasoftware.stayfit.outbound.persistence.model.HeartRateSeriesEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.HeartDailySessionProjection
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 import java.util.*
 
 @Repository
 interface HeartRateSeriesRepository : JpaRepository<HeartRateSeriesEntity, Long> {
-    fun deleteByDataPointUidIn(dataPointUids: Collection<UUID>)
+    @Modifying
+    @Query("DELETE FROM HeartRateSeriesEntity h WHERE h.dataPointUid IN :uids")
+    fun deleteByDataPointUidIn(@Param("uids") uids: Collection<UUID>)
 
     @Query(
         nativeQuery = true,

@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=stay_fit
+    url: jdbc:postgresql://db.ajxfmisrejplgpwvjswt.supabase.co:5432/postgres
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: postgres
+    password: "@ADMINar9850"
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -15,6 +15,11 @@ spring:
         format_sql: true
         type: trace
         default_schema: stay_fit
+        jdbc:
+          batch_size: 100
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
   flyway:
     enabled: false
     locations: classpath:db/migration
@@ -28,14 +33,16 @@ cloud:
       secret-key: ${AWS_SECRET_ACCESS_KEY:local}
     sqs:
       endpoint-override: ${AWS_SQS_ENDPOINT_OVERRIDE:}
+      max-concurrent-messages: ${SQS_MAX_CONCURRENT_MESSAGES:10}
+      max-messages-per-poll: ${SQS_MAX_MESSAGES_PER_POLL:10}
       heart-rate-series-queue:
-        url: ${AWS_SQS_HEART_RATE_SERIES_QUEUE_URL:https://sqs.us-east-1.amazonaws.com/000000000000/HeartRateSeriesQueue}
+        url: ${AWS_SQS_HEART_RATE_SERIES_QUEUE_URL:https://sqs.eu-north-1.amazonaws.com/000000000000/HeartRateSeriesQueue}
       sleep-session-queue:
-        url: ${AWS_SQS_SLEEP_SESSION_QUEUE_URL:https://sqs.us-east-1.amazonaws.com/000000000000/SleepSessionQueue}
+        url: ${AWS_SQS_SLEEP_SESSION_QUEUE_URL:https://sqs.eu-north-1.amazonaws.com/000000000000/SleepSessionQueue}
       exercise-session-queue:
-        url: ${AWS_SQS_EXERCISE_SESSION_QUEUE_URL:https://sqs.us-east-1.amazonaws.com/000000000000/ExerciseSessionQueue}
+        url: ${AWS_SQS_EXERCISE_SESSION_QUEUE_URL:https://sqs.eu-north-1.amazonaws.com/000000000000/ExerciseSessionQueue}
       daily-summary-queue:
-        url: ${AWS_SQS_DAILY_SUMMARY_QUEUE_URL:https://sqs.us-east-1.amazonaws.com/000000000000/DailySummaryQueue}
+        url: ${AWS_SQS_DAILY_SUMMARY_QUEUE_URL:https://sqs.eu-north-1.amazonaws.com/000000000000/DailySummaryQueue}
 
 logging:
   level:

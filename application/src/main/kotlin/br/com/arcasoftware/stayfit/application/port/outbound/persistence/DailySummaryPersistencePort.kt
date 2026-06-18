@@ -6,5 +6,6 @@ import java.time.LocalDate
 
 interface DailySummaryPersistencePort {
     fun persist(dailySummary: DailySummary): DailySummary
+    fun persistBatch(dailySummaries: List<DailySummary>)
     fun getDailySummaryEntityByDate(localDate: LocalDate): DailyActivitySummary?
 }

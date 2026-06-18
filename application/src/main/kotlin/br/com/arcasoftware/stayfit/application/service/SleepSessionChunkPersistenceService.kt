@@ -16,14 +16,34 @@ class SleepSessionChunkPersistenceService(
 ) {
     @Transactional
     fun persistDataPoint(dataPoint: HealthDataPoint) {
-        this.dataPointService.persist(dataPoint)
+        dataPointService.persist(dataPoint)
         dataPoint.sessions
             .orEmpty()
             .filterIsInstance<SleepSession>()
             .forEach { sleepSession ->
-                this.sleepStagePersistencePort.deleteByDataPointUid(sleepSession.dataPointUid)
-                sleepSession.stages?.forEach { this.sleepStagePersistencePort.persist(it) }
-                this.sleepSessionPersistencePort.persist(sleepSession)
+                sleepStagePersistencePort.deleteByDataPointUid(sleepSession.dataPointUid)
+                sleepSession.stages?.forEach { sleepStagePersistencePort.persist(it) }
+                sleepSessionPersistencePort.persist(sleepSession)
             }
+    }
+
+    @Transactional
+    fun persistBatch(dataPoints: List<HealthDataPoint>) {
+        dataPointService.persistBatch(dataPoints)
+
+        val sessions = dataPoints
+            .flatMap { it.sessions.orEmpty() }
+            .filterIsInstance<SleepSession>()
+
+        if (sessions.isEmpty()) return
+
+        val uids = sessions.map { it.dataPointUid }
+
+        sleepStagePersistencePort.deleteByDataPointUidIn(uids)
+        sleepSessionPersistencePort.deleteByDataPointUidIn(uids)
+        sleepSessionPersistencePort.persistBatch(sessions)
+
+        val allStages = sessions.flatMap { it.stages.orEmpty() }
+        sleepStagePersistencePort.persistBatch(allStages)
     }
 }

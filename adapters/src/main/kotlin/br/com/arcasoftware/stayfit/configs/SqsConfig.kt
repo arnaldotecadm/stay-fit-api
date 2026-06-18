@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
-import software.amazon.awssdk.services.sqs.SqsClient
+import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import java.net.URI
 
 @Configuration
@@ -14,22 +14,20 @@ class SqsConfig(
     @Value("\${cloud.aws.region.static}") private val region: String,
     @Value("\${cloud.aws.credentials.access-key}") private val accessKey: String,
     @Value("\${cloud.aws.credentials.secret-key}") private val secretKey: String,
-    @Value("\${cloud.aws.sqs.endpoint-override}") private val endpointOverride: String,
+    @Value("\${cloud.aws.sqs.endpoint-override:}") private val endpointOverride: String,
 ) {
+    private val credentials = StaticCredentialsProvider.create(
+        AwsBasicCredentials.create(accessKey, secretKey),
+    )
+
     @Bean
-    fun sqsClient(): SqsClient {
-        val builder = SqsClient.builder()
+    fun sqsAsyncClient(): SqsAsyncClient =
+        SqsAsyncClient.builder()
             .region(Region.of(region))
-            .credentialsProvider(
-                StaticCredentialsProvider.create(
-                    AwsBasicCredentials.create(accessKey, secretKey),
-                ),
-            )
+            .credentialsProvider(credentials)
+            .applyEndpointOverride()
+            .build()
 
-        if (endpointOverride.isNotBlank()) {
-            builder.endpointOverride(URI.create(endpointOverride))
-        }
-
-        return builder.build()
-    }
+    private fun <B : software.amazon.awssdk.awscore.client.builder.AwsClientBuilder<B, *>> B.applyEndpointOverride(): B =
+        apply { if (endpointOverride.isNotBlank()) endpointOverride(URI.create(endpointOverride)) }
 }

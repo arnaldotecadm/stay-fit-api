@@ -7,7 +7,9 @@ import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepSessionMappe
 import br.com.arcasoftware.stayfit.outbound.persistence.mapper.SleepSessionMapper.toEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.repository.SleepSessionRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.util.UUID
 
 @Service
 class SleepSessionPersistenceAdapter(
@@ -23,5 +25,16 @@ class SleepSessionPersistenceAdapter(
         }
 
     override fun getDailySleepStagesSummary(localDate: LocalDate): DailySleep =
-        this.sleepSessionRepository.getDailySleepStagesSummary(localDate = localDate).toDomain()
+        sleepSessionRepository.getDailySleepStagesSummary(localDate = localDate).toDomain()
+
+    @Transactional
+    override fun deleteByDataPointUidIn(dataPointUids: Collection<UUID>) {
+        if (dataPointUids.isNotEmpty()) sleepSessionRepository.deleteByDataPointUidIn(dataPointUids)
+    }
+
+    @Transactional
+    override fun persistBatch(sessions: List<SleepSession>) {
+        if (sessions.isEmpty()) return
+        sleepSessionRepository.saveAll(sessions.map { it.toEntity() })
+    }
 }

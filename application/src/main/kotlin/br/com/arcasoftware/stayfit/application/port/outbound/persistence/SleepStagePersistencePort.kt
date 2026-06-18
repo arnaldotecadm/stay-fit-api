@@ -6,4 +6,6 @@ import java.util.UUID
 interface SleepStagePersistencePort {
     fun persist(sleepStage: SleepStage): SleepStage
     fun deleteByDataPointUid(dataPointUid: UUID)
+    fun deleteByDataPointUidIn(dataPointUids: Collection<UUID>)
+    fun persistBatch(stages: List<SleepStage>)
 }

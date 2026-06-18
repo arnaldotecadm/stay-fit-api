@@ -5,6 +5,7 @@ import java.time.Instant
 import java.util.UUID
 
 data class HeartRateSeries(
+    override val type: HealthDataPointType = HealthDataPointType.HEART_RATE,
     override val dataPointUid: UUID,
     override val startTime: Instant,
     override val endTime: Instant,

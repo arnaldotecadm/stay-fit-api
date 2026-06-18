@@ -4,7 +4,9 @@ import br.com.arcasoftware.stayfit.outbound.persistence.model.ExerciseSessionEnt
 import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.BasicExerciseSessionProjection
 import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.ExerciseSummaryProjection
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -33,7 +35,10 @@ interface ExerciseSessionRepository : JpaRepository<ExerciseSessionEntity, Long>
     fun getBasicExerciseSessionList(): List<BasicExerciseSessionProjection>
 
     fun findByDataPointUid(dataPointUid: UUID): ExerciseSessionEntity?
-    fun deleteByDataPointUidIn(dataPointUids: Collection<UUID>)
+
+    @Modifying
+    @Query("DELETE FROM ExerciseSessionEntity e WHERE e.dataPointUid IN :uids")
+    fun deleteByDataPointUidIn(@Param("uids") uids: Collection<UUID>)
 
     @Query(
         nativeQuery = true,
