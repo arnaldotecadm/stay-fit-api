@@ -37,7 +37,7 @@ abstract class AbstractSqsAdapter(
                         .build(),
                 ).whenComplete { _, ex ->
                     if (ex != null) logger.error("Failed to send batch of {} to {}: {}", chunk.size, queueUrl, ex.message, ex)
-                    else logger.debug("Sent batch of {} messages to {}", chunk.size, queueUrl)
+                    else logger.info("Sent batch of {} messages to {}", chunk.size, queueUrl)
                 }
             }
         }

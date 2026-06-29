@@ -3,8 +3,11 @@ package br.com.arcasoftware.stayfit.outbound.persistence.repository
 import br.com.arcasoftware.stayfit.outbound.persistence.model.DailySummaryEntity
 import br.com.arcasoftware.stayfit.outbound.persistence.model.projection.DailyActivitySummaryProjection
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.time.Instant
 import java.time.LocalDate
 
 @Repository
@@ -12,6 +15,14 @@ interface DailySummaryRepository : JpaRepository<DailySummaryEntity, Long> {
 
     @Query(nativeQuery = true, value = "SELECT * FROM stay_fit.daily_summary ds WHERE cast(date as date) = :date ")
     fun findByDate(date: LocalDate): DailySummaryEntity?
+
+    @Modifying
+    @Query("DELETE FROM DailySummaryEntity d WHERE d.date = :date")
+    fun deleteByDate(@Param("date") date: Instant)
+
+    @Modifying
+    @Query("DELETE FROM DailySummaryEntity d WHERE d.date IN :dates")
+    fun deleteByDateIn(@Param("dates") dates: Collection<Instant>)
 
     @Query(
         nativeQuery = true,
