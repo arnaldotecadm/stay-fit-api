@@ -110,7 +110,7 @@ jobs:
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AWS_ACCESS_KEY_ID,Value=${{ secrets.AWS_ACCESS_KEY_ID }}"
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AWS_SECRET_ACCESS_KEY,Value=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
             "Namespace=aws:autoscaling:launchconfiguration,OptionName=IamInstanceProfile,Value=aws-elasticbeanstalk-ec2-role"
-            "Namespace=aws:autoscaling:launchconfiguration,OptionName=EC2KeyName,Value=stay-fit-key"
+            "Namespace=aws:autoscaling:launchconfiguration,OptionName=EC2KeyName,Value=stay-fit-keypair"
           )
 
           # Check whether the environment already exists and is not Terminated
