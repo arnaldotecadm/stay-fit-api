@@ -107,6 +107,8 @@ jobs:
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_HOST,Value=${{ secrets.DATABASE_HOST }}"
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_PORT,Value=${{ secrets.DATABASE_PORT }}"
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_NAME,Value=${{ secrets.DATABASE_NAME }}"
+            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AWS_ACCESS_KEY_ID,Value=${{ secrets.AWS_ACCESS_KEY_ID }}"
+            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AWS_SECRET_ACCESS_KEY,Value=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
             "Namespace=aws:autoscaling:launchconfiguration,OptionName=IamInstanceProfile,Value=aws-elasticbeanstalk-ec2-role"
             "Namespace=aws:autoscaling:launchconfiguration,OptionName=EC2KeyName,Value=stay-fit-key"
           )
