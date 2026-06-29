@@ -76,6 +76,30 @@ jobs:
             --source-bundle S3Bucket="${{ vars.EB_S3_BUCKET }}",S3Key="${{ env.S3_KEY }}" \
             --auto-create-application
 
+      - name: Ensure EC2 instance profile exists
+        run: |
+          # EB needs an *instance profile* (not just the role) attached to EC2 instances.
+          # The role aws-elasticbeanstalk-ec2-role already exists; we just need to make sure
+          # the instance profile of the same name exists and has the role attached.
+          if aws iam get-instance-profile \
+              --instance-profile-name aws-elasticbeanstalk-ec2-role \
+              --query "InstanceProfile.InstanceProfileName" \
+              --output text 2>/dev/null | grep -q "aws-elasticbeanstalk-ec2-role"; then
+            echo "Instance profile already exists — skipping creation."
+          else
+            echo "Creating instance profile aws-elasticbeanstalk-ec2-role..."
+            aws iam create-instance-profile \
+              --instance-profile-name aws-elasticbeanstalk-ec2-role
+
+            echo "Attaching role to instance profile..."
+            aws iam add-role-to-instance-profile \
+              --instance-profile-name aws-elasticbeanstalk-ec2-role \
+              --role-name aws-elasticbeanstalk-ec2-role
+
+            echo "Waiting for instance profile to propagate..."
+            sleep 10
+          fi
+
       - name: Create or update Elastic Beanstalk environment
         run: |
           ENV_NAME="${{ steps.meta.outputs.environment }}"
