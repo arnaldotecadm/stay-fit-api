@@ -62,7 +62,7 @@ jobs:
 
       - name: Upload bundle to S3
         run: |
-          S3_BUCKET="${{ secrets.EB_S3_BUCKET }}"
+          S3_BUCKET="${{ vars.EB_S3_BUCKET }}"
           LABEL="${{ steps.meta.outputs.label }}"
           aws s3 cp deploy.zip "s3://${S3_BUCKET}/stay-fit-api/${LABEL}.zip"
           echo "S3_KEY=stay-fit-api/${LABEL}.zip" >> "$GITHUB_ENV"
@@ -81,7 +81,7 @@ jobs:
           aws elasticbeanstalk update-environment \
             --application-name "${{ env.EB_APPLICATION }}" \
             --environment-name "${{ steps.meta.outputs.environment }}" \
-            --version-label "${{ env.LABEL }}"
+            --version-label "${{ env.LABEL }}" \
           --option-settings \
               Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_HOST,Value='${{ secrets.DATABASE_HOST }}' \
               Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_PORT,Value='${{ secrets.DATABASE_PORT }}' \
