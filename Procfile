@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -jar api.jar
+web: java $JAVA_OPTS -Dserver.port=5000 -jar api.jar
