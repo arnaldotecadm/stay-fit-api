@@ -1,0 +1,95 @@
+name: Deploy to AWS Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main        # → stay-fit-prod
+      - develop     # → stay-fit-staging
+
+env:
+  AWS_REGION: eu-north-1
+  EB_APPLICATION: stay-fit-api
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "corretto"
+          cache: gradle
+
+      - name: Build application
+        run: ./gradlew stage
+
+      - name: Resolve deployment metadata
+        id: meta
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          echo "label=${TIMESTAMP}-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "environment=stay-fit-prod" >> "$GITHUB_OUTPUT"
+          else
+            echo "environment=stay-fit-staging" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Package deployment bundle
+        run: |
+          # Copy the Spring Boot fat JAR to project root as api.jar
+          cp api/build/libs/api.jar api.jar
+
+          # Bundle JAR + Procfile + EB config into a ZIP
+          zip -r deploy.zip api.jar Procfile .ebextensions/
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload bundle to S3
+        run: |
+          S3_BUCKET="${{ secrets.EB_S3_BUCKET }}"
+          LABEL="${{ steps.meta.outputs.label }}"
+          aws s3 cp deploy.zip "s3://${S3_BUCKET}/stay-fit-api/${LABEL}.zip"
+          echo "S3_KEY=stay-fit-api/${LABEL}.zip" >> "$GITHUB_ENV"
+          echo "LABEL=${LABEL}" >> "$GITHUB_ENV"
+
+      - name: Create new EB application version
+        run: |
+          aws elasticbeanstalk create-application-version \
+            --application-name "${{ env.EB_APPLICATION }}" \
+            --version-label "${{ env.LABEL }}" \
+            --source-bundle S3Bucket="${{ secrets.EB_S3_BUCKET }}",S3Key="${{ env.S3_KEY }}" \
+            --auto-create-application
+
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          aws elasticbeanstalk update-environment \
+            --application-name "${{ env.EB_APPLICATION }}" \
+            --environment-name "${{ steps.meta.outputs.environment }}" \
+            --version-label "${{ env.LABEL }}"
+          --option-settings \
+              Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_HOST,Value='${{ secrets.DATABASE_HOST }}' \
+              Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_PORT,Value='${{ secrets.DATABASE_PORT }}' \
+              Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_NAME,Value='${{ secrets.DATABASE_NAME }}' \
+              Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_USERNAME,Value='${{ secrets.SPRING_DATASOURCE_USERNAME }}' \
+              Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_PASSWORD,Value='${{ secrets.SPRING_DATASOURCE_PASSWORD }}'
+
+      - name: Wait for environment to become healthy
+        run: |
+          echo "Waiting for environment ${{ steps.meta.outputs.environment }} to be Ready..."
+          aws elasticbeanstalk wait environment-updated \
+            --application-name "${{ env.EB_APPLICATION }}" \
+            --environment-names "${{ steps.meta.outputs.environment }}"
+          echo "Deployment complete."

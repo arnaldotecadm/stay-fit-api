@@ -1,0 +1,11 @@
+branch-defaults:
+  main:
+    environment: stay-fit-prod
+  develop:
+    environment: stay-fit-staging
+
+global:
+  application_name: stay-fit-api
+  default_platform: "Corretto 17 running on 64bit Amazon Linux 2023"
+  default_region: eu-north-1
+  workspace_type: Application
