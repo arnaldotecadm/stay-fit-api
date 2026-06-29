@@ -81,17 +81,13 @@ jobs:
           # EB needs an *instance profile* (not just the role) attached to EC2 instances.
           # The role aws-elasticbeanstalk-ec2-role already exists; we just need to make sure
           # the instance profile of the same name exists and has the role attached.
-          if aws iam get-instance-profile \
-              --instance-profile-name aws-elasticbeanstalk-ec2-role \
-              --query "InstanceProfile.InstanceProfileName" \
-              --output text 2>/dev/null | grep -q "aws-elasticbeanstalk-ec2-role"; then
-            echo "Instance profile already exists — skipping creation."
+          # We attempt creation and treat EntityAlreadyExists as a no-op.
+          if aws iam create-instance-profile \
+              --instance-profile-name aws-elasticbeanstalk-ec2-role 2>&1 \
+              | grep -q "EntityAlreadyExists"; then
+            echo "Instance profile already exists — skipping."
           else
-            echo "Creating instance profile aws-elasticbeanstalk-ec2-role..."
-            aws iam create-instance-profile \
-              --instance-profile-name aws-elasticbeanstalk-ec2-role
-
-            echo "Attaching role to instance profile..."
+            echo "Instance profile created. Attaching role..."
             aws iam add-role-to-instance-profile \
               --instance-profile-name aws-elasticbeanstalk-ec2-role \
               --role-name aws-elasticbeanstalk-ec2-role
