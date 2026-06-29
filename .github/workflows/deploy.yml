@@ -108,6 +108,7 @@ jobs:
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_PORT,Value=${{ secrets.DATABASE_PORT }}"
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_NAME,Value=${{ secrets.DATABASE_NAME }}"
             "Namespace=aws:autoscaling:launchconfiguration,OptionName=IamInstanceProfile,Value=aws-elasticbeanstalk-ec2-role"
+            "Namespace=aws:autoscaling:launchconfiguration,OptionName=EC2KeyName,Value=stay-fit-key"
           )
 
           # Check whether the environment already exists and is not Terminated
