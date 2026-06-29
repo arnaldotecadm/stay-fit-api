@@ -104,7 +104,9 @@ jobs:
           OPTION_SETTINGS=(
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_USERNAME,Value=${{ secrets.SPRING_DATASOURCE_USERNAME }}"
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_PASSWORD,Value=${{ secrets.SPRING_DATASOURCE_PASSWORD }}"
-            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_URL,Value=${{ secrets.SPRING_DATASOURCE_URL }}"
+            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_HOST,Value=${{ secrets.DATABASE_HOST }}"
+            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_PORT,Value=${{ secrets.DATABASE_PORT }}"
+            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_NAME,Value=${{ secrets.DATABASE_NAME }}"
             "Namespace=aws:autoscaling:launchconfiguration,OptionName=IamInstanceProfile,Value=aws-elasticbeanstalk-ec2-role"
           )
 
