@@ -85,6 +85,7 @@ jobs:
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_USERNAME,Value=${{ secrets.SPRING_DATASOURCE_USERNAME }}"
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_PASSWORD,Value=${{ secrets.SPRING_DATASOURCE_PASSWORD }}"
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_URL,Value=${{ secrets.SPRING_DATASOURCE_URL }}"
+            "Namespace=aws:autoscaling:launchconfiguration,OptionName=IamInstanceProfile,Value=aws-elasticbeanstalk-ec2-role"
           )
 
           # Check whether the environment already exists and is not Terminated
