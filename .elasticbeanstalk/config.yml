@@ -6,6 +6,6 @@ branch-defaults:
 
 global:
   application_name: stay-fit-api
-  default_platform: "Corretto 17 running on 64bit Amazon Linux 2023"
+  default_platform: "Corretto 17 running on 64bit Amazon Linux 2023"  # Java SE — not Tomcat
   default_region: eu-north-1
   workspace_type: Application

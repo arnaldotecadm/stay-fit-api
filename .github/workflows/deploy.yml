@@ -125,9 +125,11 @@ jobs:
           if [[ "$STATUS" == "None" || "$STATUS" == "Terminated" || "$STATUS" == "null" ]]; then
             echo "Environment does not exist — creating it..."
 
-            # Resolve the latest Corretto 17 / Amazon Linux 2023 solution stack
+            # Resolve the latest Java SE (Corretto 17 / Amazon Linux 2023) solution stack.
+            # Explicitly exclude Tomcat: on Tomcat platforms EB ignores server.port and always
+            # binds to 8080 internally. Java SE platforms honour the PORT env var / Procfile.
             SOLUTION_STACK=$(aws elasticbeanstalk list-available-solution-stacks \
-              --query "SolutionStacks[?contains(@,'Corretto 17') && contains(@,'Amazon Linux 2023')] | [0]" \
+              --query "SolutionStacks[?contains(@,'Corretto 17') && contains(@,'Amazon Linux 2023') && !contains(@,'Tomcat')] | [0]" \
               --output text)
             echo "Using solution stack: ${SOLUTION_STACK}"
 
