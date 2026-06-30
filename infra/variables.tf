@@ -80,16 +80,3 @@ variable "db_password" {
   sensitive   = true
 }
 
-# ── App AWS credentials (used by the app at runtime, not by Terraform) ───────
-
-variable "app_aws_access_key_id" {
-  description = "AWS access key injected into the app environment"
-  type        = string
-  sensitive   = true
-}
-
-variable "app_aws_secret_access_key" {
-  description = "AWS secret key injected into the app environment"
-  type        = string
-  sensitive   = true
-}
