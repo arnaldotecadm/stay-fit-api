@@ -192,6 +192,25 @@ resource "aws_elastic_beanstalk_environment" "this" {
     value     = "basic"
   }
 
+  # ── CloudWatch log streaming ─────────────────────────────────────────────────
+  # Streams /var/log/web.stdout.log (app) and /var/log/eb-engine.log (EB agent)
+  # to log groups under /aws/elasticbeanstalk/<env-name>/
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "StreamLogs"
+    value     = "true"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "DeleteOnTerminate"
+    value     = "false"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "RetentionInDays"
+    value     = "7"
+  }
+
   # ── Deployment ───────────────────────────────────────────────────────────────
   setting {
     namespace = "aws:elasticbeanstalk:command"
