@@ -35,9 +35,6 @@ cloud:
   aws:
     region:
       static: ${AWS_REGION:eu-north-1}
-    credentials:
-      access-key: ${AWS_ACCESS_KEY_ID:local}
-      secret-key: ${AWS_SECRET_ACCESS_KEY:local}
     sqs:
       enabled: true
       endpoint-override: ${AWS_SQS_ENDPOINT_OVERRIDE:}

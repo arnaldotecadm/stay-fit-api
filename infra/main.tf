@@ -227,7 +227,7 @@ resource "aws_elastic_beanstalk_environment" "this" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "JAVA_OPTS"
-    value     = "-Xms512m -Xmx1024m -XX:+UseG1GC"
+    value     = "-Xms512m -Xmx1024m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom"
   }
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
@@ -260,18 +260,6 @@ resource "aws_elastic_beanstalk_environment" "this" {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "SPRING_DATASOURCE_PASSWORD"
     value     = var.db_password
-  }
-
-  # AWS credentials for the app (SQS access, etc.)
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "AWS_ACCESS_KEY_ID"
-    value     = var.app_aws_access_key_id
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "AWS_SECRET_ACCESS_KEY"
-    value     = var.app_aws_secret_access_key
   }
 
   # SQS queue URLs
