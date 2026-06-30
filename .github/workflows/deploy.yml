@@ -120,6 +120,10 @@ jobs:
             "Namespace=aws:autoscaling:launchconfiguration,OptionName=RootVolumeSize,Value=10"
             # On-demand (no spot)
             "Namespace=aws:ec2:instances,OptionName=EnableSpot,Value=false"
+            # VPC: associate a public IP so the instance is reachable (SSH, health checks)
+            "Namespace=aws:ec2:vpc,OptionName=AssociatePublicIpAddress,Value=true"
+            # Open SSH from any IP — restrict to your IP range if desired
+            "Namespace=aws:autoscaling:launchconfiguration,OptionName=SSHSourceRestriction,Value=tcp,22,22,0.0.0.0/0"
             # Health reporting: basic (not enhanced)
             "Namespace=aws:elasticbeanstalk:healthreporting:system,OptionName=SystemType,Value=basic"
             # Deployment command timeout
