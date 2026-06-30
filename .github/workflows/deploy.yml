@@ -3,12 +3,12 @@ name: Deploy to AWS Elastic Beanstalk
 on:
   push:
     branches:
-      - main        # → stay-fit-prod
-      - develop     # → stay-fit-staging
+      - main       # → stay-fit-prod
+      - develop    # → stay-fit-staging
 
 env:
   AWS_REGION: eu-north-1
-  EB_APPLICATION: stay-fit-api
+  TF_WORKING_DIR: infra
 
 jobs:
   build-and-deploy:
@@ -34,21 +34,15 @@ jobs:
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
           TIMESTAMP=$(date +%Y%m%d%H%M%S)
-          echo "label=${TIMESTAMP}-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          LABEL="${TIMESTAMP}-${SHORT_SHA}"
+          echo "label=${LABEL}" >> "$GITHUB_OUTPUT"
+          echo "s3_key=stay-fit-api/${LABEL}.zip" >> "$GITHUB_OUTPUT"
 
           if [[ "${{ github.ref_name }}" == "main" ]]; then
             echo "environment=stay-fit-prod" >> "$GITHUB_OUTPUT"
           else
             echo "environment=stay-fit-staging" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Package deployment bundle
-        run: |
-          # Copy the Spring Boot fat JAR to project root as api.jar
-          cp api/build/libs/api.jar api.jar
-
-          # Bundle JAR + Procfile + EB config into a ZIP
-          zip -r deploy.zip api.jar Procfile .ebextensions/
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -57,162 +51,52 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
-
-      - name: Upload bundle to S3
+      - name: Package and upload deployment bundle
         run: |
-          S3_BUCKET="${{ vars.EB_S3_BUCKET }}"
-          LABEL="${{ steps.meta.outputs.label }}"
-          aws s3 cp deploy.zip "s3://${S3_BUCKET}/stay-fit-api/${LABEL}.zip"
-          echo "S3_KEY=stay-fit-api/${LABEL}.zip" >> "$GITHUB_ENV"
-          echo "LABEL=${LABEL}" >> "$GITHUB_ENV"
+          cp api/build/libs/api.jar api.jar
+          zip -r deploy.zip api.jar Procfile .ebextensions/
+          aws s3 cp deploy.zip "s3://${{ vars.EB_S3_BUCKET }}/${{ steps.meta.outputs.s3_key }}"
 
-      - name: Create new EB application version
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~> 1.9"
+
+      - name: Terraform Init
+        working-directory: ${{ env.TF_WORKING_DIR }}
         run: |
-          aws elasticbeanstalk create-application-version \
-            --application-name "${{ env.EB_APPLICATION }}" \
-            --version-label "${{ env.LABEL }}" \
-            --source-bundle S3Bucket="${{ vars.EB_S3_BUCKET }}",S3Key="${{ env.S3_KEY }}" \
-            --auto-create-application
+          terraform init \
+            -backend-config="bucket=${{ vars.EB_S3_BUCKET }}" \
+            -backend-config="key=terraform-state/${{ steps.meta.outputs.environment }}/terraform.tfstate"
 
-      - name: Ensure EC2 instance profile exists
-        run: |
-          # EB needs an *instance profile* (not just the role) attached to EC2 instances.
-          # The role aws-elasticbeanstalk-ec2-role already exists; we just need to make sure
-          # the instance profile of the same name exists and has the role attached.
-          # We attempt creation and treat EntityAlreadyExists as a no-op.
-          if aws iam create-instance-profile \
-              --instance-profile-name aws-elasticbeanstalk-ec2-role 2>&1 \
-              | grep -q "EntityAlreadyExists"; then
-            echo "Instance profile already exists — skipping."
-          else
-            echo "Instance profile created. Attaching role..."
-            aws iam add-role-to-instance-profile \
-              --instance-profile-name aws-elasticbeanstalk-ec2-role \
-              --role-name aws-elasticbeanstalk-ec2-role
+      - name: Terraform Plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_environment_name:          ${{ steps.meta.outputs.environment }}
+          TF_VAR_version_label:             ${{ steps.meta.outputs.label }}
+          TF_VAR_s3_bucket:                 ${{ vars.EB_S3_BUCKET }}
+          TF_VAR_s3_key:                    ${{ steps.meta.outputs.s3_key }}
+          TF_VAR_db_host:                   ${{ secrets.DATABASE_HOST }}
+          TF_VAR_db_port:                   ${{ secrets.DATABASE_PORT }}
+          TF_VAR_db_name:                   ${{ secrets.DATABASE_NAME }}
+          TF_VAR_db_username:               ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          TF_VAR_db_password:               ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          TF_VAR_app_aws_access_key_id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_app_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform plan -out=tfplan
 
-            echo "Waiting for instance profile to propagate..."
-            sleep 10
-          fi
-
-      - name: Resolve public subnet and ensure IGW route exists
-        id: network
-        run: |
-          # Find the default VPC
-          VPC_ID=$(aws ec2 describe-vpcs \
-            --filters "Name=isDefault,Values=true" \
-            --query "Vpcs[0].VpcId" --output text)
-          echo "VPC: ${VPC_ID}"
-
-          # Find the internet gateway attached to this VPC
-          IGW_ID=$(aws ec2 describe-internet-gateways \
-            --filters "Name=attachment.vpc-id,Values=${VPC_ID}" \
-            --query "InternetGateways[0].InternetGatewayId" --output text)
-          echo "IGW: ${IGW_ID}"
-
-          # Ensure the main route table has a 0.0.0.0/0 → IGW route (idempotent)
-          MAIN_RTB=$(aws ec2 describe-route-tables \
-            --filters "Name=vpc-id,Values=${VPC_ID}" "Name=association.main,Values=true" \
-            --query "RouteTables[0].RouteTableId" --output text)
-          echo "Main route table: ${MAIN_RTB}"
-
-          if aws ec2 describe-route-tables \
-              --route-table-ids "${MAIN_RTB}" \
-              --query "RouteTables[0].Routes[?DestinationCidrBlock=='0.0.0.0/0']" \
-              --output text | grep -q "${IGW_ID}"; then
-            echo "IGW route already present — skipping."
-          else
-            echo "Adding IGW route to main route table..."
-            aws ec2 create-route \
-              --route-table-id "${MAIN_RTB}" \
-              --destination-cidr-block 0.0.0.0/0 \
-              --gateway-id "${IGW_ID}"
-          fi
-
-          # Pick the first public subnet in the VPC
-          SUBNET_ID=$(aws ec2 describe-subnets \
-            --filters "Name=vpc-id,Values=${VPC_ID}" "Name=default-for-az,Values=true" \
-            --query "Subnets[0].SubnetId" --output text)
-          echo "Public subnet: ${SUBNET_ID}"
-
-          echo "vpc_id=${VPC_ID}"     >> "$GITHUB_OUTPUT"
-          echo "subnet_id=${SUBNET_ID}" >> "$GITHUB_OUTPUT"
-
-      - name: Create or update Elastic Beanstalk environment
-        run: |
-          ENV_NAME="${{ steps.meta.outputs.environment }}"
-          APP_NAME="${{ env.EB_APPLICATION }}"
-
-          # JSON format is required to avoid the AWS CLI shorthand parser splitting
-          # comma-containing values (e.g. SSHSourceRestriction) into lists.
-          OPTION_SETTINGS=$(cat <<JSON
-          [
-            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"SPRING_DATASOURCE_USERNAME","Value":"${{ secrets.SPRING_DATASOURCE_USERNAME }}"},
-            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"SPRING_DATASOURCE_PASSWORD","Value":"${{ secrets.SPRING_DATASOURCE_PASSWORD }}"},
-            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"DATABASE_HOST","Value":"${{ secrets.DATABASE_HOST }}"},
-            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"DATABASE_PORT","Value":"${{ secrets.DATABASE_PORT }}"},
-            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"DATABASE_NAME","Value":"${{ secrets.DATABASE_NAME }}"},
-            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"AWS_ACCESS_KEY_ID","Value":"${{ secrets.AWS_ACCESS_KEY_ID }}"},
-            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"AWS_SECRET_ACCESS_KEY","Value":"${{ secrets.AWS_SECRET_ACCESS_KEY }}"},
-            {"Namespace":"aws:elasticbeanstalk:environment","OptionName":"ServiceRole","Value":"arn:aws:iam::405633560433:role/ElasticBeanStalkServiceRole"},
-            {"Namespace":"aws:elasticbeanstalk:environment","OptionName":"EnvironmentType","Value":"SingleInstance"},
-            {"Namespace":"aws:autoscaling:launchconfiguration","OptionName":"IamInstanceProfile","Value":"aws-elasticbeanstalk-ec2-role"},
-            {"Namespace":"aws:autoscaling:launchconfiguration","OptionName":"EC2KeyName","Value":"stay-fit-keypair"},
-            {"Namespace":"aws:autoscaling:launchconfiguration","OptionName":"RootVolumeType","Value":"gp2"},
-            {"Namespace":"aws:autoscaling:launchconfiguration","OptionName":"RootVolumeSize","Value":"10"},
-            {"Namespace":"aws:autoscaling:launchconfiguration","OptionName":"SSHSourceRestriction","Value":"tcp,22,22,0.0.0.0/0"},
-            {"Namespace":"aws:ec2:instances","OptionName":"EnableSpot","Value":"false"},
-            {"Namespace":"aws:ec2:vpc","OptionName":"VPCId","Value":"${{ steps.network.outputs.vpc_id }}"},
-            {"Namespace":"aws:ec2:vpc","OptionName":"Subnets","Value":"${{ steps.network.outputs.subnet_id }}"},
-            {"Namespace":"aws:ec2:vpc","OptionName":"AssociatePublicIpAddress","Value":"true"},
-            {"Namespace":"aws:elasticbeanstalk:healthreporting:system","OptionName":"SystemType","Value":"basic"},
-            {"Namespace":"aws:elasticbeanstalk:command","OptionName":"Timeout","Value":"300"}
-          ]
-          JSON
-          )
-
-          # Check whether the environment already exists and is not Terminated
-          STATUS=$(aws elasticbeanstalk describe-environments \
-            --application-name "$APP_NAME" \
-            --environment-names "$ENV_NAME" \
-            --query "Environments[0].Status" \
-            --output text 2>/dev/null || echo "None")
-
-          echo "Current environment status: ${STATUS}"
-
-          if [[ "$STATUS" == "None" || "$STATUS" == "Terminated" || "$STATUS" == "null" ]]; then
-            echo "Environment does not exist — creating it..."
-
-            # Resolve the latest Java SE (Corretto 21 / Amazon Linux 2023) solution stack.
-            # Explicitly exclude Tomcat: on Tomcat platforms EB ignores server.port and always
-            # binds to 8080 internally. Java SE platforms honour the PORT env var / Procfile.
-            SOLUTION_STACK=$(aws elasticbeanstalk list-available-solution-stacks \
-              --query "SolutionStacks[?contains(@,'Corretto 21') && contains(@,'Amazon Linux 2023') && !contains(@,'Tomcat')] | [0]" \
-              --output text)
-            echo "Using solution stack: ${SOLUTION_STACK}"
-
-            aws elasticbeanstalk create-environment \
-              --application-name "$APP_NAME" \
-              --environment-name "$ENV_NAME" \
-              --solution-stack-name "$SOLUTION_STACK" \
-              --version-label "${{ env.LABEL }}" \
-              --option-settings "$OPTION_SETTINGS"
-          else
-            echo "Environment exists — updating it..."
-
-            aws elasticbeanstalk update-environment \
-              --application-name "$APP_NAME" \
-              --environment-name "$ENV_NAME" \
-              --version-label "${{ env.LABEL }}" \
-              --option-settings "$OPTION_SETTINGS"
-          fi
-
-      - name: Wait for environment to become healthy
-        run: |
-          ENV_NAME="${{ steps.meta.outputs.environment }}"
-          echo "Waiting for ${ENV_NAME} to be Ready..."
-          aws elasticbeanstalk wait environment-updated \
-            --application-name "${{ env.EB_APPLICATION }}" \
-            --environment-names "$ENV_NAME"
-          echo "Deployment complete."
+      - name: Terraform Apply
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_environment_name:          ${{ steps.meta.outputs.environment }}
+          TF_VAR_version_label:             ${{ steps.meta.outputs.label }}
+          TF_VAR_s3_bucket:                 ${{ vars.EB_S3_BUCKET }}
+          TF_VAR_s3_key:                    ${{ steps.meta.outputs.s3_key }}
+          TF_VAR_db_host:                   ${{ secrets.DATABASE_HOST }}
+          TF_VAR_db_port:                   ${{ secrets.DATABASE_PORT }}
+          TF_VAR_db_name:                   ${{ secrets.DATABASE_NAME }}
+          TF_VAR_db_username:               ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          TF_VAR_db_password:               ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          TF_VAR_app_aws_access_key_id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_app_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform apply -auto-approve tfplan
