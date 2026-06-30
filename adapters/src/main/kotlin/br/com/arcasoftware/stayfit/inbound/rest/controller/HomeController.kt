@@ -12,4 +12,9 @@ class HomeController {
     fun ping(): String {
         return "pong..."
     }
+
+    @GetMapping("home")
+    fun home(): String {
+        return "That's your home"
+    }
 }
