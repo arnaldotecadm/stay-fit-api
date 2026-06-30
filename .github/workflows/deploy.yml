@@ -144,35 +144,32 @@ jobs:
           ENV_NAME="${{ steps.meta.outputs.environment }}"
           APP_NAME="${{ env.EB_APPLICATION }}"
 
-          OPTION_SETTINGS=(
-            # App environment variables
-            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_USERNAME,Value=${{ secrets.SPRING_DATASOURCE_USERNAME }}"
-            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_PASSWORD,Value=${{ secrets.SPRING_DATASOURCE_PASSWORD }}"
-            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_HOST,Value=${{ secrets.DATABASE_HOST }}"
-            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_PORT,Value=${{ secrets.DATABASE_PORT }}"
-            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_NAME,Value=${{ secrets.DATABASE_NAME }}"
-            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AWS_ACCESS_KEY_ID,Value=${{ secrets.AWS_ACCESS_KEY_ID }}"
-            "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AWS_SECRET_ACCESS_KEY,Value=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-            # Environment
-            "Namespace=aws:elasticbeanstalk:environment,OptionName=ServiceRole,Value=arn:aws:iam::405633560433:role/ElasticBeanStalkServiceRole"
-            "Namespace=aws:elasticbeanstalk:environment,OptionName=EnvironmentType,Value=SingleInstance"
-            # EC2 / launch configuration
-            "Namespace=aws:autoscaling:launchconfiguration,OptionName=IamInstanceProfile,Value=aws-elasticbeanstalk-ec2-role"
-            "Namespace=aws:autoscaling:launchconfiguration,OptionName=EC2KeyName,Value=stay-fit-keypair"
-            "Namespace=aws:autoscaling:launchconfiguration,OptionName=RootVolumeType,Value=gp2"
-            "Namespace=aws:autoscaling:launchconfiguration,OptionName=RootVolumeSize,Value=10"
-            # On-demand (no spot)
-            "Namespace=aws:ec2:instances,OptionName=EnableSpot,Value=false"
-            # VPC / networking — resolved dynamically by the 'network' step
-            "Namespace=aws:ec2:vpc,OptionName=VPCId,Value=${{ steps.network.outputs.vpc_id }}"
-            "Namespace=aws:ec2:vpc,OptionName=Subnets,Value=${{ steps.network.outputs.subnet_id }}"
-            "Namespace=aws:ec2:vpc,OptionName=AssociatePublicIpAddress,Value=true"
-            # Open SSH from any IP — restrict to your IP range if desired
-            "Namespace=aws:autoscaling:launchconfiguration,OptionName=SSHSourceRestriction,Value=tcp,22,22,0.0.0.0/0"
-            # Health reporting: basic (not enhanced)
-            "Namespace=aws:elasticbeanstalk:healthreporting:system,OptionName=SystemType,Value=basic"
-            # Deployment command timeout
-            "Namespace=aws:elasticbeanstalk:command,OptionName=Timeout,Value=300"
+          # JSON format is required to avoid the AWS CLI shorthand parser splitting
+          # comma-containing values (e.g. SSHSourceRestriction) into lists.
+          OPTION_SETTINGS=$(cat <<JSON
+          [
+            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"SPRING_DATASOURCE_USERNAME","Value":"${{ secrets.SPRING_DATASOURCE_USERNAME }}"},
+            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"SPRING_DATASOURCE_PASSWORD","Value":"${{ secrets.SPRING_DATASOURCE_PASSWORD }}"},
+            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"DATABASE_HOST","Value":"${{ secrets.DATABASE_HOST }}"},
+            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"DATABASE_PORT","Value":"${{ secrets.DATABASE_PORT }}"},
+            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"DATABASE_NAME","Value":"${{ secrets.DATABASE_NAME }}"},
+            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"AWS_ACCESS_KEY_ID","Value":"${{ secrets.AWS_ACCESS_KEY_ID }}"},
+            {"Namespace":"aws:elasticbeanstalk:application:environment","OptionName":"AWS_SECRET_ACCESS_KEY","Value":"${{ secrets.AWS_SECRET_ACCESS_KEY }}"},
+            {"Namespace":"aws:elasticbeanstalk:environment","OptionName":"ServiceRole","Value":"arn:aws:iam::405633560433:role/ElasticBeanStalkServiceRole"},
+            {"Namespace":"aws:elasticbeanstalk:environment","OptionName":"EnvironmentType","Value":"SingleInstance"},
+            {"Namespace":"aws:autoscaling:launchconfiguration","OptionName":"IamInstanceProfile","Value":"aws-elasticbeanstalk-ec2-role"},
+            {"Namespace":"aws:autoscaling:launchconfiguration","OptionName":"EC2KeyName","Value":"stay-fit-keypair"},
+            {"Namespace":"aws:autoscaling:launchconfiguration","OptionName":"RootVolumeType","Value":"gp2"},
+            {"Namespace":"aws:autoscaling:launchconfiguration","OptionName":"RootVolumeSize","Value":"10"},
+            {"Namespace":"aws:autoscaling:launchconfiguration","OptionName":"SSHSourceRestriction","Value":"tcp,22,22,0.0.0.0/0"},
+            {"Namespace":"aws:ec2:instances","OptionName":"EnableSpot","Value":"false"},
+            {"Namespace":"aws:ec2:vpc","OptionName":"VPCId","Value":"${{ steps.network.outputs.vpc_id }}"},
+            {"Namespace":"aws:ec2:vpc","OptionName":"Subnets","Value":"${{ steps.network.outputs.subnet_id }}"},
+            {"Namespace":"aws:ec2:vpc","OptionName":"AssociatePublicIpAddress","Value":"true"},
+            {"Namespace":"aws:elasticbeanstalk:healthreporting:system","OptionName":"SystemType","Value":"basic"},
+            {"Namespace":"aws:elasticbeanstalk:command","OptionName":"Timeout","Value":"300"}
+          ]
+          JSON
           )
 
           # Check whether the environment already exists and is not Terminated
@@ -200,7 +197,7 @@ jobs:
               --environment-name "$ENV_NAME" \
               --solution-stack-name "$SOLUTION_STACK" \
               --version-label "${{ env.LABEL }}" \
-              --option-settings "${OPTION_SETTINGS[@]}"
+              --option-settings "$OPTION_SETTINGS"
           else
             echo "Environment exists — updating it..."
 
@@ -208,7 +205,7 @@ jobs:
               --application-name "$APP_NAME" \
               --environment-name "$ENV_NAME" \
               --version-label "${{ env.LABEL }}" \
-              --option-settings "${OPTION_SETTINGS[@]}"
+              --option-settings "$OPTION_SETTINGS"
           fi
 
       - name: Wait for environment to become healthy
