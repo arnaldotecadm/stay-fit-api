@@ -96,6 +96,49 @@ jobs:
             sleep 10
           fi
 
+      - name: Resolve public subnet and ensure IGW route exists
+        id: network
+        run: |
+          # Find the default VPC
+          VPC_ID=$(aws ec2 describe-vpcs \
+            --filters "Name=isDefault,Values=true" \
+            --query "Vpcs[0].VpcId" --output text)
+          echo "VPC: ${VPC_ID}"
+
+          # Find the internet gateway attached to this VPC
+          IGW_ID=$(aws ec2 describe-internet-gateways \
+            --filters "Name=attachment.vpc-id,Values=${VPC_ID}" \
+            --query "InternetGateways[0].InternetGatewayId" --output text)
+          echo "IGW: ${IGW_ID}"
+
+          # Ensure the main route table has a 0.0.0.0/0 → IGW route (idempotent)
+          MAIN_RTB=$(aws ec2 describe-route-tables \
+            --filters "Name=vpc-id,Values=${VPC_ID}" "Name=association.main,Values=true" \
+            --query "RouteTables[0].RouteTableId" --output text)
+          echo "Main route table: ${MAIN_RTB}"
+
+          if aws ec2 describe-route-tables \
+              --route-table-ids "${MAIN_RTB}" \
+              --query "RouteTables[0].Routes[?DestinationCidrBlock=='0.0.0.0/0']" \
+              --output text | grep -q "${IGW_ID}"; then
+            echo "IGW route already present — skipping."
+          else
+            echo "Adding IGW route to main route table..."
+            aws ec2 create-route \
+              --route-table-id "${MAIN_RTB}" \
+              --destination-cidr-block 0.0.0.0/0 \
+              --gateway-id "${IGW_ID}"
+          fi
+
+          # Pick the first public subnet in the VPC
+          SUBNET_ID=$(aws ec2 describe-subnets \
+            --filters "Name=vpc-id,Values=${VPC_ID}" "Name=default-for-az,Values=true" \
+            --query "Subnets[0].SubnetId" --output text)
+          echo "Public subnet: ${SUBNET_ID}"
+
+          echo "vpc_id=${VPC_ID}"     >> "$GITHUB_OUTPUT"
+          echo "subnet_id=${SUBNET_ID}" >> "$GITHUB_OUTPUT"
+
       - name: Create or update Elastic Beanstalk environment
         run: |
           ENV_NAME="${{ steps.meta.outputs.environment }}"
@@ -120,7 +163,9 @@ jobs:
             "Namespace=aws:autoscaling:launchconfiguration,OptionName=RootVolumeSize,Value=10"
             # On-demand (no spot)
             "Namespace=aws:ec2:instances,OptionName=EnableSpot,Value=false"
-            # VPC: associate a public IP so the instance is reachable (SSH, health checks)
+            # VPC / networking — resolved dynamically by the 'network' step
+            "Namespace=aws:ec2:vpc,OptionName=VPCId,Value=${{ steps.network.outputs.vpc_id }}"
+            "Namespace=aws:ec2:vpc,OptionName=Subnets,Value=${{ steps.network.outputs.subnet_id }}"
             "Namespace=aws:ec2:vpc,OptionName=AssociatePublicIpAddress,Value=true"
             # Open SSH from any IP — restrict to your IP range if desired
             "Namespace=aws:autoscaling:launchconfiguration,OptionName=SSHSourceRestriction,Value=tcp,22,22,0.0.0.0/0"
