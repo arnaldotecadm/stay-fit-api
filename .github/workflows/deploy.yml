@@ -102,6 +102,7 @@ jobs:
           APP_NAME="${{ env.EB_APPLICATION }}"
 
           OPTION_SETTINGS=(
+            # App environment variables
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_USERNAME,Value=${{ secrets.SPRING_DATASOURCE_USERNAME }}"
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_DATASOURCE_PASSWORD,Value=${{ secrets.SPRING_DATASOURCE_PASSWORD }}"
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_HOST,Value=${{ secrets.DATABASE_HOST }}"
@@ -109,9 +110,20 @@ jobs:
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=DATABASE_NAME,Value=${{ secrets.DATABASE_NAME }}"
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AWS_ACCESS_KEY_ID,Value=${{ secrets.AWS_ACCESS_KEY_ID }}"
             "Namespace=aws:elasticbeanstalk:application:environment,OptionName=AWS_SECRET_ACCESS_KEY,Value=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-            "Namespace=aws:elasticbeanstalk:environment,OptionName=ServiceRole,Value=ElasticBeanStalkServiceRole"
+            # Environment
+            "Namespace=aws:elasticbeanstalk:environment,OptionName=ServiceRole,Value=arn:aws:iam::405633560433:role/ElasticBeanStalkServiceRole"
+            "Namespace=aws:elasticbeanstalk:environment,OptionName=EnvironmentType,Value=SingleInstance"
+            # EC2 / launch configuration
             "Namespace=aws:autoscaling:launchconfiguration,OptionName=IamInstanceProfile,Value=aws-elasticbeanstalk-ec2-role"
             "Namespace=aws:autoscaling:launchconfiguration,OptionName=EC2KeyName,Value=stay-fit-keypair"
+            "Namespace=aws:autoscaling:launchconfiguration,OptionName=RootVolumeType,Value=gp2"
+            "Namespace=aws:autoscaling:launchconfiguration,OptionName=RootVolumeSize,Value=10"
+            # On-demand (no spot)
+            "Namespace=aws:ec2:instances,OptionName=EnableSpot,Value=false"
+            # Health reporting: basic (not enhanced)
+            "Namespace=aws:elasticbeanstalk:healthreporting:system,OptionName=SystemType,Value=basic"
+            # Deployment command timeout
+            "Namespace=aws:elasticbeanstalk:command,OptionName=Timeout,Value=300"
           )
 
           # Check whether the environment already exists and is not Terminated
