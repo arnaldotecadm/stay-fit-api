@@ -10,6 +10,6 @@ class HomeController {
 
     @GetMapping("ping")
     fun ping(): String {
-        return "pong"
+        return "pong..."
     }
 }
